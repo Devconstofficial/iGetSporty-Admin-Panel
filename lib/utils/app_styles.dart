@@ -7,6 +7,8 @@ import 'app_colors.dart';
 class AppStyles {
   static TextStyle blackTextStyle() => GoogleFonts.urbanist(
       fontSize: 20.sp, fontWeight: FontWeight.w600, color: kBlackColor);
+  static TextStyle whiteTextStyle() => GoogleFonts.urbanist(
+      fontSize: 14.sp, fontWeight: FontWeight.w600, color: kWhiteColor);
   static TextStyle sideBarTextStyle() => GoogleFonts.urbanist(
       fontSize: 16.sp.sp,
       fontWeight: FontWeight.w500,
@@ -26,4 +28,14 @@ class AppStyles {
         color: kSecondaryColor,
         borderRadius: BorderRadius.circular(16.r),
       );
+}
+
+double getWidth(double pixelValue) {
+  double baseScreenWidth = 1440.0;
+  return (pixelValue / baseScreenWidth) * 100.w;
+}
+
+double getHeight(double pixelValue) {
+  double baseScreenHeight = 1024.0;
+  return (pixelValue / baseScreenHeight) * 100.h;
 }
