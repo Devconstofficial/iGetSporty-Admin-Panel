@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/status_selection_dialog.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 import 'package:iget_sporty_admin_panel/views/pages/dashboard/controller/dashboard_controller.dart';
@@ -19,7 +20,7 @@ class UsersList extends StatelessWidget {
         () => DataTable(
           dataRowMinHeight: 38.h,
           headingRowHeight: 48.h,
-          columnSpacing: 52.w,
+          columnSpacing: 50.w,
           dividerThickness: 0.4,
           headingRowColor: const WidgetStatePropertyAll(kGreyShadeColor),
           headingTextStyle: AppStyles.blackTextStyle().copyWith(
@@ -40,40 +41,40 @@ class UsersList extends StatelessWidget {
             DataColumn(label: Text("Status")),
             DataColumn(label: Text("Action")),
           ],
-          rows: controller.users.map((owner) {
+          rows: controller.users.map((user) {
             return DataRow(
               cells: [
                 DataCell(Text(
-                  owner.id,
+                  user.id,
                 )),
                 DataCell(Text(
-                  owner.name ?? "N/A",
+                  user.name ?? "N/A",
                 )),
                 DataCell(Text(
-                  owner.sports.join(','),
+                  user.sports.join(','),
                   maxLines: 1,
                 )),
                 DataCell(Text(
-                  owner.city ?? "N/A",
+                  user.city ?? "N/A",
                 )),
                 DataCell(
                   Container(
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: owner.userStatus == "Active"
+                      color: user.userStatus == "Active"
                           ? kGreenColor.withOpacity(0.3)
-                          : owner.userStatus == "Pending"
+                          : user.userStatus == "Pending"
                               ? kPurpleColor.withOpacity(0.3)
                               : kRedColor.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(4.5),
                     ),
                     child: Text(
-                      owner.userStatus ?? "N/A",
+                      user.userStatus ?? "N/A",
                       style: TextStyle(
-                        color: owner.userStatus == "Active"
+                        color: user.userStatus == "Active"
                             ? kGreenColor
-                            : owner.userStatus == "Pending"
+                            : user.userStatus == "Pending"
                                 ? kPurpleColor
                                 : kRedColor,
                         fontWeight: FontWeight.w700,
@@ -95,19 +96,29 @@ class UsersList extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset(
-                          kEditIcon,
-                          height: 16.h,
-                          width: 16.w,
+                        GestureDetector(
+                          onTap: () {
+                            showStatusDialog(context, user.id, false);
+                          },
+                          child: Image.asset(
+                            kEditIcon,
+                            height: 16.h,
+                            width: 16.w,
+                          ),
                         ),
                         Container(
                           width: 0.6.w,
                           color: kGreyShade2Color,
                         ),
-                        Image.asset(
-                          kBinIcon,
-                          height: 16.h,
-                          width: 16.w,
+                        GestureDetector(
+                          onTap: () {
+                            controller.deleteUser(user.id);
+                          },
+                          child: Image.asset(
+                            kBinIcon,
+                            height: 16.h,
+                            width: 16.w,
+                          ),
                         )
                       ],
                     ),

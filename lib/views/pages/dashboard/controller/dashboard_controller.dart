@@ -7,6 +7,7 @@ import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 
 class DashboardController extends GetxController {
   var selectedMonth = "January".obs;
+  var selectedStatus = ''.obs;
   var venueOwners = <VenueOwnerModel>[
     VenueOwnerModel(
         id: '0001',
@@ -15,7 +16,7 @@ class DashboardController extends GetxController {
         ownerStatus: "Pending",
         sports: ['Cricket', 'Table Tennis']),
     VenueOwnerModel(
-        id: '0001',
+        id: '0002',
         name: "John Doe",
         city: "NYC",
         ownerStatus: "Active",
@@ -76,4 +77,30 @@ class DashboardController extends GetxController {
       icon: kAvatar,
     ),
   ].obs;
+
+  void updateOwnerStatus(String id, String newStatus) {
+    final index = venueOwners.indexWhere((owner) => owner.id == id);
+    if (index != -1) {
+      venueOwners[index].ownerStatus = newStatus;
+      venueOwners.refresh();
+    }
+  }
+
+  void updateUserStatus(String id, String newStatus) {
+    final index = users.indexWhere((user) => user.id == id);
+    if (index != -1) {
+      users[index].userStatus = newStatus;
+      users.refresh();
+    }
+  }
+
+  void deleteVenueOwner(String id) {
+    venueOwners.removeWhere((owner) => owner.id == id);
+    venueOwners.refresh();
+  }
+
+  void deleteUser(String id) {
+    users.removeWhere((user) => user.id == id);
+    users.refresh();
+  }
 }

@@ -8,6 +8,7 @@ class VenueOwnerModel {
   List<String> cnicImages;
   String? ownerStatus;
   List<String> sports;
+  DateTime? createdAt;
 
   VenueOwnerModel({
     required this.id,
@@ -19,5 +20,6 @@ class VenueOwnerModel {
     this.cnicImages = const [],
     this.ownerStatus,
     this.sports = const [],
+    this.createdAt,
   });
 }

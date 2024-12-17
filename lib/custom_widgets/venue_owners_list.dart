@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/status_selection_dialog.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 import 'package:iget_sporty_admin_panel/views/pages/dashboard/controller/dashboard_controller.dart';
@@ -20,7 +21,7 @@ class VenueOwnersList extends StatelessWidget {
           dataRowMinHeight: 38.h,
           headingRowHeight: 48.h,
           dividerThickness: 0.4,
-          columnSpacing: 52.w,
+          columnSpacing: 50.w,
           headingRowColor: const WidgetStatePropertyAll(kGreyShadeColor),
           headingTextStyle: AppStyles.blackTextStyle().copyWith(
               color: kBlackShadeColor,
@@ -95,19 +96,29 @@ class VenueOwnersList extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Image.asset(
-                          kEditIcon,
-                          height: 16.h,
-                          width: 16.w,
+                        GestureDetector(
+                          onTap: () {
+                            showStatusDialog(context, owner.id, true);
+                          },
+                          child: Image.asset(
+                            kEditIcon,
+                            height: 16.h,
+                            width: 16.w,
+                          ),
                         ),
                         Container(
                           width: 0.6.w,
                           color: kGreyShade2Color,
                         ),
-                        Image.asset(
-                          kBinIcon,
-                          height: 16.h,
-                          width: 16.w,
+                        GestureDetector(
+                          onTap: () {
+                            controller.deleteVenueOwner(owner.id);
+                          },
+                          child: Image.asset(
+                            kBinIcon,
+                            height: 16.h,
+                            width: 16.w,
+                          ),
                         )
                       ],
                     ),

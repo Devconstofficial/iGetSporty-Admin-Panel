@@ -48,7 +48,7 @@ class SideBarController extends GetxController {
     const DashboardScreen(),
     const VenuesOwnerScreen(),
     const UsersScreen(),
-    const RevenueScreen(),
+    RevenueScreen(),
     const BookingsScreen(),
   ];
 

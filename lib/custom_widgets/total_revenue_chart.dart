@@ -1,17 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_styles.dart';
+import 'package:iget_sporty_admin_panel/views/pages/revenue/controller/revenue_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class TotalRevenueChart extends StatelessWidget {
-  const TotalRevenueChart({super.key});
+  final double width;
+  final bool isRevenue;
+  const TotalRevenueChart(
+      {super.key, this.width = double.infinity, this.isRevenue = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
+    final RevenueController controller = Get.find();
+    List<DropdownMenuItem<String>> _buildDropdownMenuItems() {
+      final months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+
+      return months.map((String month) {
+        return DropdownMenuItem<String>(
+          value: month,
+          child: Text(month),
+        );
+      }).toList();
+    }
+
     return Container(
-      height: 330.h,
-      width: double.infinity,
+      height: 336.h,
+      width: width,
       margin: EdgeInsets.symmetric(horizontal: 28.w),
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
       decoration: BoxDecoration(
@@ -76,26 +109,88 @@ class TotalRevenueChart extends StatelessWidget {
                   ),
                 ],
               ),
+              if (isRevenue) ...[
+                const Spacer(),
+                Obx(() => Container(
+                      height: 28.h,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: kGreyShad1Color, width: 0.6),
+                        color: kWhiteShadeColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButton<String>(
+                        padding: EdgeInsets.zero,
+                        dropdownColor: kWhiteColor,
+                        value: controller.selectedMonth.value,
+                        underline: const SizedBox.shrink(),
+                        items: _buildDropdownMenuItems(),
+                        onChanged: (value) {
+                          controller.selectedMonth.value = value!;
+                        },
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 20.sp,
+                          color: kGreyShade3Color.withOpacity(0.4),
+                        ),
+                        style: AppStyles.blackTextStyle().copyWith(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: kGreyShade3Color.withOpacity(0.4),
+                        ),
+                      ),
+                    )),
+              ]
             ],
           ),
           SizedBox(height: 16.h),
           SizedBox(
             height: 244.h,
             child: SfCartesianChart(
-              legend: Legend(
-                isVisible: true,
-                position: LegendPosition.top,
-                alignment: ChartAlignment.near,
-                isResponsive: true,
+              margin: EdgeInsets.zero,
+              plotAreaBorderColor: Colors.transparent,
+              primaryXAxis: CategoryAxis(
+                labelStyle: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: kSideBarTextColor.withOpacity(0.4),
+                ),
               ),
-              primaryXAxis: CategoryAxis(),
               primaryYAxis: NumericAxis(
                 minimum: 0,
                 maximum: 30,
                 interval: 10,
-                // numberFormat: NumberFormat.compactSimpleCurrency(),
+                labelStyle: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: kSideBarTextColor.withOpacity(0.4),
+                ),
               ),
-              tooltipBehavior: TooltipBehavior(enable: true),
+              series: <CartesianSeries>[
+                SplineSeries<RevenueData, String>(
+                  name: 'Current Week',
+                  color: kSecondaryColor,
+                  width: 3,
+                  markerSettings: const MarkerSettings(
+                    isVisible: true,
+                    color: kSecondaryColor,
+                  ),
+                  dataSource: getCurrentWeekData(),
+                  xValueMapper: (RevenueData revenue, _) => revenue.month,
+                  yValueMapper: (RevenueData revenue, _) => revenue.revenue,
+                ),
+                SplineSeries<RevenueData, String>(
+                  name: 'Previous Week',
+                  color: kPrimaryColor,
+                  width: 3,
+                  dashArray: const <double>[5, 5],
+                  dataSource: getPreviousWeekData(),
+                  xValueMapper: (RevenueData revenue, _) => revenue.month,
+                  yValueMapper: (RevenueData revenue, _) => revenue.revenue,
+                ),
+              ],
             ),
           ),
         ],
@@ -128,7 +223,6 @@ class TotalRevenueChart extends StatelessWidget {
   }
 }
 
-// Revenue Data Model
 class RevenueData {
   final String month;
   final double revenue;
