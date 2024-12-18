@@ -5,6 +5,7 @@ import 'package:iget_sporty_admin_panel/custom_widgets/date_filter_dialog.dart';
 import 'package:iget_sporty_admin_panel/custom_widgets/status_selection_dialog.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
+import 'package:iget_sporty_admin_panel/utils/app_strings.dart';
 import 'package:iget_sporty_admin_panel/views/pages/venues_owner/controller/venues_owner_controller.dart';
 import 'package:intl/intl.dart';
 
@@ -293,19 +294,35 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                       rows: controller.filteredOwners.map((owner) {
                         return DataRow(
                           cells: [
-                            DataCell(Text(
-                              owner.id,
-                            )),
-                            DataCell(Text(
-                              owner.name ?? "N/A",
-                            )),
-                            DataCell(Text(
-                              owner.sports.join(','),
-                              maxLines: 1,
-                            )),
-                            DataCell(Text(
-                              owner.city ?? "N/A",
-                            )),
+                            DataCell(onTap: () {
+                              Get.toNamed(kVenueDetailsScreenRoute,
+                                  arguments: owner);
+                            },
+                                Text(
+                                  owner.id,
+                                )),
+                            DataCell(onTap: () {
+                              Get.toNamed(kVenueDetailsScreenRoute,
+                                  arguments: owner);
+                            },
+                                Text(
+                                  owner.name ?? "N/A",
+                                )),
+                            DataCell(onTap: () {
+                              Get.toNamed(kVenueDetailsScreenRoute,
+                                  arguments: owner);
+                            },
+                                Text(
+                                  owner.sports.join(','),
+                                  maxLines: 1,
+                                )),
+                            DataCell(onTap: () {
+                              Get.toNamed(kVenueDetailsScreenRoute,
+                                  arguments: owner);
+                            },
+                                Text(
+                                  owner.city ?? "N/A",
+                                )),
                             DataCell(
                               Container(
                                 padding: EdgeInsets.symmetric(
