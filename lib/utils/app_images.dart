@@ -8,6 +8,11 @@ String kRevenueIcon = "$basePathIcons/revenue.png";
 String kUserIcon = "$basePathIcons/user.png";
 String kVenueIcon = "$basePathIcons/venue.png";
 String kLogoutIcon = "$basePathIcons/logout.png";
+String kArrowIcon = "$basePathIcons/arrow.png";
+String kEditIcon = "$basePathIcons/edit.png";
+String kBinIcon = "$basePathIcons/bin.png";
+String kBellIcon = "$basePathIcons/bell.png";
+String kFilterIcon = "$basePathIcons/filter.png";
 
 /// IMAGES
 String kAdminImage = "$basePath/admin_image.png";
@@ -16,3 +21,5 @@ String kActUser2 = "$basePath/act2.png";
 String kActUser3 = "$basePath/act3.png";
 String kActUser4 = "$basePath/act4.png";
 String kActUser5 = "$basePath/act5.png";
+String kAvatar = "$basePath/avatar.png";
+String kImg = "$basePath/img.png";
