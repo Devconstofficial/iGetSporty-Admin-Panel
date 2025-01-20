@@ -15,7 +15,9 @@ String kBellIcon = "$basePathIcons/bell.png";
 String kFilterIcon = "$basePathIcons/filter.png";
 
 /// IMAGES
+///
 String kAdminImage = "$basePath/admin_image.png";
+String kLogo = "$basePath/logo.png";
 String kActUser1 = "$basePath/act1.png";
 String kActUser2 = "$basePath/act2.png";
 String kActUser3 = "$basePath/act3.png";

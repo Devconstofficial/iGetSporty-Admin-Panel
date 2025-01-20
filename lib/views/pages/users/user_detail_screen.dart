@@ -100,9 +100,9 @@ class UserDetailScreen extends StatelessWidget {
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
-                itemCount: user.sports.length,
+                itemCount: user.interestedSports!.length,
                 itemBuilder: (context, index) {
-                  String sport = user.sports[index];
+                  String sport = user.interestedSports![index];
                   return Padding(
                     padding: EdgeInsets.only(right: 12.w),
                     child: Container(
@@ -137,25 +137,20 @@ class UserDetailScreen extends StatelessWidget {
                   color: kBlackShadeColor),
             ),
             SizedBox(height: 12.h),
-            SizedBox(
-              height: 112.h,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                itemCount: user.cnicImages.length,
-                itemBuilder: (context, index) {
-                  final imagePath = user.cnicImages[index];
-                  return Padding(
-                    padding: EdgeInsets.only(right: 8.w),
-                    child: Image.asset(
-                      imagePath,
-                      height: 112.h,
-                      width: 167.w,
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                },
+            Padding(
+              padding: EdgeInsets.only(right: 8.w),
+              child: Image.network(
+                user.cnicFrontImage!,
+                height: 112.h,
+                width: 167.w,
+                fit: BoxFit.cover,
               ),
+            ),
+            Image.network(
+              user.cnicBackImage!,
+              height: 112.h,
+              width: 167.w,
+              fit: BoxFit.cover,
             ),
             SizedBox(height: 12.h),
           ],

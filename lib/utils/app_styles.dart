@@ -9,6 +9,8 @@ class AppStyles {
       fontSize: 20.sp, fontWeight: FontWeight.w600, color: kBlackColor);
   static TextStyle whiteTextStyle() => GoogleFonts.urbanist(
       fontSize: 14.sp, fontWeight: FontWeight.w600, color: kWhiteColor);
+  static TextStyle greyTextStyle() => GoogleFonts.urbanist(
+      fontSize: 14.sp, fontWeight: FontWeight.w500, color: kGreyShade11Color);
   static TextStyle sideBarTextStyle() => GoogleFonts.urbanist(
       fontSize: 16.sp.sp,
       fontWeight: FontWeight.w500,

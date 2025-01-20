@@ -1,43 +1,34 @@
+import 'dart:developer';
+
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/activity_model.dart';
 import 'package:iget_sporty_admin_panel/models/notification_model.dart';
 import 'package:iget_sporty_admin_panel/models/user_model.dart';
-import 'package:iget_sporty_admin_panel/models/venue_owner_model.dart';
+import 'package:iget_sporty_admin_panel/services/admin_services.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 
 class DashboardController extends GetxController {
   var selectedMonth = "January".obs;
   var selectedStatus = ''.obs;
-  var venueOwners = <VenueOwnerModel>[
-    VenueOwnerModel(
-        id: '0001',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis']),
-    VenueOwnerModel(
-        id: '0002',
-        name: "John Doe",
-        city: "NYC",
-        ownerStatus: "Active",
-        sports: ['Cricket', 'Table Tennis']),
-  ].obs;
+  var venueOwners = <UserModel>[].obs;
+  var users = <UserModel>[].obs;
+  var isLoading = false.obs;
+  var isLoadingUsers = false.obs;
+  var selectedUserId = ''.obs;
 
-  // Users
-  var users = <UserModel>[
-    UserModel(
-        id: '0001',
-        name: "Alice",
-        city: "LA",
-        userStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis']),
-    UserModel(
-        id: '0002',
-        name: "Bob",
-        city: "SF",
-        userStatus: "Active",
-        sports: ['Cricket', 'Table Tennis']),
-  ].obs;
+  @override
+  onInit() {
+    super.onInit();
+    getBoth();
+  }
+
+  getBoth() async {
+    Future.wait([
+      getAllOwners(),
+      getAllPlayers(),
+    ]);
+  }
 
   // Notifications
   var notifications = <NotificationModel>[
@@ -78,10 +69,88 @@ class DashboardController extends GetxController {
     ),
   ].obs;
 
+  Future<void> getAllOwners() async {
+    try {
+      isLoading(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllOwners();
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        var data = response['data']['data'];
+        if (data != null) {
+          venueOwners.value = List<UserModel>.from(
+            data.map((venue) => UserModel.fromJson(venue)),
+          ).take(4).toList();
+        }
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch owners.');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  Future<void> getAllPlayers() async {
+    try {
+      isLoadingUsers(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllPlayers();
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        var data = response['data']['data'];
+        if (data != null) {
+          users.value = List<UserModel>.from(
+            data.map((venue) => UserModel.fromJson(venue)),
+          ).take(4).toList();
+        }
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch players.');
+    } finally {
+      isLoadingUsers(false);
+    }
+  }
+
+  // Future<void> deleteVenue(String id) async {
+  //   try {
+  //     isDeleting(true);
+  //     venueId.value = id;
+
+  //     Map<String, dynamic> response = await VenueServices.deleteVenue(id);
+
+  //     if (response['success'] == true &&
+  //         response['data']['status'] == "success") {
+  //       venuesList.removeWhere((venue) => venue.id == id);
+  //       showCustomSnackbar('Success', response['data']['message'],
+  //           backgroundColor: Colors.green);
+  //     } else {
+  //       _handleError(response['data']['message'] ?? 'Something went wrong');
+  //     }
+  //   } catch (e, stackTrace) {
+  //     log('Error: $e\n$stackTrace');
+  //     _handleError('Failed to delete venue.');
+  //   } finally {
+  //     isDeleting(false);
+  //     venueId.value = '';
+  //   }
+  // }
+
+  void _handleError(String message) {
+    showCustomSnackbar("Error", message);
+  }
+
   void updateOwnerStatus(String id, String newStatus) {
     final index = venueOwners.indexWhere((owner) => owner.id == id);
     if (index != -1) {
-      venueOwners[index].ownerStatus = newStatus;
+      venueOwners[index].status = newStatus;
       venueOwners.refresh();
     }
   }
@@ -89,7 +158,7 @@ class DashboardController extends GetxController {
   void updateUserStatus(String id, String newStatus) {
     final index = users.indexWhere((user) => user.id == id);
     if (index != -1) {
-      users[index].userStatus = newStatus;
+      users[index].status = newStatus;
       users.refresh();
     }
   }

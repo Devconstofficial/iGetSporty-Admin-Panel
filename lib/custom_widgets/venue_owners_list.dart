@@ -45,13 +45,13 @@ class VenueOwnersList extends StatelessWidget {
             return DataRow(
               cells: [
                 DataCell(Text(
-                  owner.id,
+                  owner.id!,
                 )),
                 DataCell(Text(
                   owner.name ?? "N/A",
                 )),
                 DataCell(Text(
-                  owner.sports.join(','),
+                  owner.interestedSports!.join(','),
                   maxLines: 1,
                 )),
                 DataCell(Text(
@@ -62,19 +62,19 @@ class VenueOwnersList extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: owner.ownerStatus == "Active"
+                      color: owner.status == "Active"
                           ? kGreenColor.withOpacity(0.3)
-                          : owner.ownerStatus == "Pending"
+                          : owner.status == "Pending"
                               ? kPurpleColor.withOpacity(0.3)
                               : kRedColor.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(4.5),
                     ),
                     child: Text(
-                      owner.ownerStatus ?? "N/A",
+                      owner.status ?? "N/A",
                       style: TextStyle(
-                        color: owner.ownerStatus == "Active"
+                        color: owner.status == "Active"
                             ? kGreenColor
-                            : owner.ownerStatus == "Pending"
+                            : owner.status == "Pending"
                                 ? kPurpleColor
                                 : kRedColor,
                         fontWeight: FontWeight.w700,
@@ -98,7 +98,7 @@ class VenueOwnersList extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            showStatusDialog(context, owner.id, true);
+                            showStatusDialog(context, owner.id!, true);
                           },
                           child: Image.asset(
                             kEditIcon,
@@ -112,7 +112,7 @@ class VenueOwnersList extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            controller.deleteVenueOwner(owner.id);
+                            controller.deleteVenueOwner(owner.id!);
                           },
                           child: Image.asset(
                             kBinIcon,

@@ -211,7 +211,15 @@ class DashboardScreen extends GetView<DashboardController> {
                         ],
                       ),
                       SizedBox(height: 36.h),
-                      VenueOwnersList(),
+                      Obx(() => controller.isLoading.value
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: kSecondaryColor,
+                              ),
+                            )
+                          : controller.venueOwners.isEmpty
+                              ? const Center(child: Text('No owners'))
+                              : VenueOwnersList()),
                     ],
                   ),
                 ),
@@ -280,7 +288,15 @@ class DashboardScreen extends GetView<DashboardController> {
                         ],
                       ),
                       SizedBox(height: 36.h),
-                      UsersList(),
+                      Obx(() => controller.isLoadingUsers.value
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: kSecondaryColor,
+                              ),
+                            )
+                          : controller.venueOwners.isEmpty
+                              ? const Center(child: Text('No players'))
+                              : UsersList()),
                     ],
                   ),
                 ),

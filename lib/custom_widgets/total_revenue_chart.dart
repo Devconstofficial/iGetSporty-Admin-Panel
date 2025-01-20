@@ -43,7 +43,7 @@ class TotalRevenueChart extends StatelessWidget {
     }
 
     return Container(
-      height: 336.h,
+      height: 340.h,
       width: width,
       margin: EdgeInsets.symmetric(horizontal: 28.w),
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),

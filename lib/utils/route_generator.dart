@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/views/pages/auth/forgot_password_email_screen.dart';
+import 'package:iget_sporty_admin_panel/views/pages/auth/forgot_password_otp_screen.dart';
+import 'package:iget_sporty_admin_panel/views/pages/auth/login_screen.dart';
+import 'package:iget_sporty_admin_panel/views/pages/auth/new_password_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/bookings/booking_detail_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/bookings/bookings_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/dashboard/dashboard_screen.dart';
@@ -50,6 +54,22 @@ class RouteGenerator {
       GetPage(
           name: kVenueDetailsScreenRoute,
           page: () => VenueDetailsScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kForgotPasswordScreenRoute,
+          page: () => ForgotPasswordEmailScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kNewPasswordScreenRoute,
+          page: () => NewPasswordScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kLoginScreenRoute,
+          page: () => LoginScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kPhoneVerificationScreenRoute,
+          page: () => ForgotPasswordOtpScreen(),
           binding: ScreenBindings()),
     ];
   }

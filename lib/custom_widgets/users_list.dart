@@ -45,13 +45,14 @@ class UsersList extends StatelessWidget {
             return DataRow(
               cells: [
                 DataCell(Text(
-                  user.id,
+                  "${user.id!.substring(0, 10)}...",
+                  maxLines: 1,
                 )),
                 DataCell(Text(
                   user.name ?? "N/A",
                 )),
                 DataCell(Text(
-                  user.sports.join(','),
+                  user.interestedSports!.join(','),
                   maxLines: 1,
                 )),
                 DataCell(Text(
@@ -62,19 +63,19 @@ class UsersList extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: user.userStatus == "Active"
+                      color: user.status == "Active"
                           ? kGreenColor.withOpacity(0.3)
-                          : user.userStatus == "Pending"
+                          : user.status == "Pending"
                               ? kPurpleColor.withOpacity(0.3)
                               : kRedColor.withOpacity(0.3),
                       borderRadius: BorderRadius.circular(4.5),
                     ),
                     child: Text(
-                      user.userStatus ?? "N/A",
+                      user.status ?? "N/A",
                       style: TextStyle(
-                        color: user.userStatus == "Active"
+                        color: user.status == "Active"
                             ? kGreenColor
-                            : user.userStatus == "Pending"
+                            : user.status == "Pending"
                                 ? kPurpleColor
                                 : kRedColor,
                         fontWeight: FontWeight.w700,
@@ -98,7 +99,7 @@ class UsersList extends StatelessWidget {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            showStatusDialog(context, user.id, false);
+                            showStatusDialog(context, user.id!, false);
                           },
                           child: Image.asset(
                             kEditIcon,
@@ -112,7 +113,7 @@ class UsersList extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            controller.deleteUser(user.id);
+                            controller.deleteUser(user.id!);
                           },
                           child: Image.asset(
                             kBinIcon,

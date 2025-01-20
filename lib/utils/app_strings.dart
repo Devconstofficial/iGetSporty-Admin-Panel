@@ -8,3 +8,7 @@ const String kBookingsScreenRoute = "/bookings-screen-route";
 const String kUserDetailsScreenRoute = "/UserDetailsScreenRoute";
 const String kBookingDetailsScreenRoute = "/BookingDetailsScreenRoute";
 const String kVenueDetailsScreenRoute = "/VenueDetailsScreenRoute";
+const String kLoginScreenRoute = '/LoginScreenRoute';
+const String kForgotPasswordScreenRoute = '/kForgotPasswordScreenRoute';
+const String kPhoneVerificationScreenRoute = '/PhoneVerificationScreenRoute';
+const String kNewPasswordScreenRoute = '/kNewPasswordScreenRoute';
