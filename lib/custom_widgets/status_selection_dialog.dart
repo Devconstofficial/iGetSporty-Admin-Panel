@@ -135,75 +135,88 @@ Future<void> showStatusDialog(
                 ),
               ),
               isFilter ? SizedBox(height: 34.h) : SizedBox(height: 0.h),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (isFilter) {
-                      if (!isVenueOwner) {
-                        if (usersController.selectedStatuses.isEmpty) {
-                          showCustomSnackbar(
-                              'Error', 'Please select atleast one status');
-                        } else {
-                          usersController.filterUsersByStatuses();
-                          Get.back();
-                        }
-                      } else {
-                        if (venuesOwnerController.selectedStatuses.isEmpty) {
-                          showCustomSnackbar(
-                              'Error', 'Please select atleast one status');
-                        } else {
-                          venuesOwnerController.filterOwnersByStatuses();
-                          Get.back();
-                        }
-                      }
-                    } else if (!isFilter && isVenueOwner) {
-                      if (venuesOwnerController.selectedStatus.value == '') {
-                        showCustomSnackbar('Error', 'Please select a status');
-                      } else {
-                        venuesOwnerController.updateOwnerStatus(
-                            id, venuesOwnerController.selectedStatus.value);
+              Obx(() => controller.isUpdating.value ||
+                      venuesOwnerController.isUpdating.value ||
+                      usersController.isUpdating.value
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: kSecondaryColor,
+                      ),
+                    )
+                  : Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (isFilter) {
+                            if (!isVenueOwner) {
+                              if (usersController.selectedStatuses.isEmpty) {
+                                showCustomSnackbar('Error',
+                                    'Please select atleast one status');
+                              } else {
+                                usersController.filterUsersByStatuses();
+                                Get.back();
+                              }
+                            } else {
+                              if (venuesOwnerController
+                                  .selectedStatuses.isEmpty) {
+                                showCustomSnackbar('Error',
+                                    'Please select atleast one status');
+                              } else {
+                                venuesOwnerController.filterOwnersByStatuses();
+                                Get.back();
+                              }
+                            }
+                          } else if (!isFilter && isVenueOwner) {
+                            if (venuesOwnerController.selectedStatus.value ==
+                                '') {
+                              showCustomSnackbar(
+                                  'Error', 'Please select a status');
+                            } else {
+                              venuesOwnerController.updateOwnerStatus(id,
+                                  venuesOwnerController.selectedStatus.value);
 
-                        Get.back();
-                      }
-                    } else if (!isFilter && !isVenueOwner) {
-                      if (usersController.selectedStatus.value == '') {
-                        showCustomSnackbar('Error', 'Please select a status');
-                      } else {
-                        usersController.updateUserStatus(
-                            id, usersController.selectedStatus.value);
+                              Get.back();
+                            }
+                          } else if (!isFilter && !isVenueOwner) {
+                            if (usersController.selectedStatus.value == '') {
+                              showCustomSnackbar(
+                                  'Error', 'Please select a status');
+                            } else {
+                              usersController.updateUserStatus(
+                                  id, usersController.selectedStatus.value);
 
-                        Get.back();
-                      }
-                    } else {
-                      if (controller.selectedStatus.value == '') {
-                        showCustomSnackbar('Error', 'Please select a status');
-                      } else {
-                        if (isVenueOwner) {
-                          controller.updateOwnerStatus(
-                              id, controller.selectedStatus.value);
-                        } else {
-                          controller.updateUserStatus(
-                              id, controller.selectedStatus.value);
-                        }
-                        Get.back();
-                      }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: kSecondaryColor,
-                    minimumSize: Size(129.w, 35.h),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                  ),
-                  child: Text(
-                    "Apply Now",
-                    style: AppStyles.whiteTextStyle()
-                        .copyWith(fontSize: 12.sp, fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
+                              Get.back();
+                            }
+                          } else {
+                            if (controller.selectedStatus.value == '') {
+                              showCustomSnackbar(
+                                  'Error', 'Please select a status');
+                            } else {
+                              if (isVenueOwner) {
+                                controller.updateUserStatus(
+                                    id, controller.selectedStatus.value);
+                              } else {
+                                controller.updateUserStatus(
+                                    id, controller.selectedStatus.value);
+                              }
+                              Get.back();
+                            }
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: kSecondaryColor,
+                          minimumSize: Size(129.w, 50.h),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                        ),
+                        child: Text(
+                          "Apply Now",
+                          style: AppStyles.whiteTextStyle().copyWith(
+                              fontSize: 12.sp, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    )),
             ],
           ),
         ),

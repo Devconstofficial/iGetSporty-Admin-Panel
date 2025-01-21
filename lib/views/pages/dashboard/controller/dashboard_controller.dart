@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/activity_model.dart';
@@ -16,12 +17,8 @@ class DashboardController extends GetxController {
   var isLoading = false.obs;
   var isLoadingUsers = false.obs;
   var selectedUserId = ''.obs;
-
-  @override
-  onInit() {
-    super.onInit();
-    getBoth();
-  }
+  var userId = ''.obs;
+  var isUpdating = false.obs;
 
   getBoth() async {
     Future.wait([
@@ -119,57 +116,70 @@ class DashboardController extends GetxController {
     }
   }
 
-  // Future<void> deleteVenue(String id) async {
-  //   try {
-  //     isDeleting(true);
-  //     venueId.value = id;
+  Future<void> deleteUser(String id) async {
+    try {
+      userId.value = id;
 
-  //     Map<String, dynamic> response = await VenueServices.deleteVenue(id);
+      Map<String, dynamic> response = await AdminServices.deleteUser(id);
 
-  //     if (response['success'] == true &&
-  //         response['data']['status'] == "success") {
-  //       venuesList.removeWhere((venue) => venue.id == id);
-  //       showCustomSnackbar('Success', response['data']['message'],
-  //           backgroundColor: Colors.green);
-  //     } else {
-  //       _handleError(response['data']['message'] ?? 'Something went wrong');
-  //     }
-  //   } catch (e, stackTrace) {
-  //     log('Error: $e\n$stackTrace');
-  //     _handleError('Failed to delete venue.');
-  //   } finally {
-  //     isDeleting(false);
-  //     venueId.value = '';
-  //   }
-  // }
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        if (venueOwners.any((owner) => owner.id == id)) {
+          venueOwners.removeWhere((owner) => owner.id == id);
+        } else {
+          users.removeWhere((user) => user.id == id);
+        }
+        Get.back();
+        showCustomSnackbar('Success', response['data']['message'],
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to delete venue.');
+    } finally {
+      userId.value = '';
+    }
+  }
+
+  Future<void> updateUserStatus(String status, String id) async {
+    try {
+      isUpdating(true);
+
+      Map<String, dynamic> response =
+          await AdminServices.updateUserStatus({"status": status}, id);
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        if (venueOwners.any((owner) => owner.id == id)) {
+          final index = venueOwners.indexWhere((owner) => owner.id == id);
+          if (index != -1) {
+            venueOwners[index].status = status;
+            venueOwners.refresh();
+          }
+        } else {
+          final index = users.indexWhere((user) => user.id == id);
+          if (index != -1) {
+            users[index].status = status;
+            users.refresh();
+          }
+        }
+        Get.back();
+        showCustomSnackbar('Success', response['data']['message'],
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to update user.');
+    } finally {
+      isUpdating(true);
+    }
+  }
 
   void _handleError(String message) {
     showCustomSnackbar("Error", message);
-  }
-
-  void updateOwnerStatus(String id, String newStatus) {
-    final index = venueOwners.indexWhere((owner) => owner.id == id);
-    if (index != -1) {
-      venueOwners[index].status = newStatus;
-      venueOwners.refresh();
-    }
-  }
-
-  void updateUserStatus(String id, String newStatus) {
-    final index = users.indexWhere((user) => user.id == id);
-    if (index != -1) {
-      users[index].status = newStatus;
-      users.refresh();
-    }
-  }
-
-  void deleteVenueOwner(String id) {
-    venueOwners.removeWhere((owner) => owner.id == id);
-    venueOwners.refresh();
-  }
-
-  void deleteUser(String id) {
-    users.removeWhere((user) => user.id == id);
-    users.refresh();
   }
 }

@@ -165,4 +165,24 @@ class AdminServices {
       rethrow;
     }
   }
+
+  static Future<Map<String, dynamic>> updateUserStatus(
+      Map<String, dynamic> body, String id) async {
+    final token = await prefs.getUserToken();
+    try {
+      Response response;
+
+      response = await HttpServiceManager.patch(
+        endPoint: "${Url.updateUserStatus}/$id",
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      return jsonDecode(response.body);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

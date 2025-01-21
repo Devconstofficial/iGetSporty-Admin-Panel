@@ -74,7 +74,8 @@ class BookingDetailScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             CustomTextField(
               controller: TextEditingController(
-                  text: DateFormat('MM/dd/yyyy').format(booking.dateTime)),
+                  text: DateFormat('MM/dd/yyyy')
+                      .format(DateTime.parse(booking.date))),
               hintText: '',
               readOnly: true,
             ),
@@ -87,53 +88,53 @@ class BookingDetailScreen extends StatelessWidget {
                   color: kBlackShadeColor),
             ),
             SizedBox(height: 12.h),
-            CustomTextField(
-              controller: TextEditingController(text: booking.bookingStatus),
-              hintText: '',
-              readOnly: true,
-            ),
-            SizedBox(height: 12.h),
-            Text(
-              "Sports",
-              style: AppStyles.blackTextStyle().copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: kBlackShadeColor),
-            ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              height: 50.h,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.horizontal,
-                itemCount: booking.sports.length,
-                itemBuilder: (context, index) {
-                  String sport = booking.sports[index];
-                  return Padding(
-                    padding: EdgeInsets.only(right: 12.w),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 9.h,
-                        horizontal: 9.w,
-                      ),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: kWhiteColor,
-                          border: Border.all(color: kGreyShade10Color)),
-                      child: Center(
-                        child: Text(
-                          sport,
-                          style: AppStyles.blackTextStyle().copyWith(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w400,
-                              color: kGreyShade10Color),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            // CustomTextField(
+            //   controller: TextEditingController(text: booking.bookingStatus),
+            //   hintText: '',
+            //   readOnly: true,
+            // ),
+            // SizedBox(height: 12.h),
+            // Text(
+            //   "Sports",
+            //   style: AppStyles.blackTextStyle().copyWith(
+            //       fontSize: 14.sp,
+            //       fontWeight: FontWeight.w600,
+            //       color: kBlackShadeColor),
+            // ),
+            // SizedBox(height: 12.h),
+            // SizedBox(
+            //   height: 50.h,
+            //   child: ListView.builder(
+            //     padding: EdgeInsets.zero,
+            //     scrollDirection: Axis.horizontal,
+            //     itemCount: booking.sports.length,
+            //     itemBuilder: (context, index) {
+            //       String sport = booking.sports[index];
+            //       return Padding(
+            //         padding: EdgeInsets.only(right: 12.w),
+            //         child: Container(
+            //           padding: EdgeInsets.symmetric(
+            //             vertical: 9.h,
+            //             horizontal: 9.w,
+            //           ),
+            //           decoration: BoxDecoration(
+            //               borderRadius: BorderRadius.circular(8),
+            //               color: kWhiteColor,
+            //               border: Border.all(color: kGreyShade10Color)),
+            //           child: Center(
+            //             child: Text(
+            //               sport,
+            //               style: AppStyles.blackTextStyle().copyWith(
+            //                   fontSize: 14.sp,
+            //                   fontWeight: FontWeight.w400,
+            //                   color: kGreyShade10Color),
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
             SizedBox(height: 12.h),
           ],
         ),

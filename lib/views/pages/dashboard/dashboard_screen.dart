@@ -11,7 +11,15 @@ import 'package:iget_sporty_admin_panel/views/pages/dashboard/controller/dashboa
 
 import '../../../utils/app_styles.dart';
 
-class DashboardScreen extends GetView<DashboardController> {
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final DashboardController controller = Get.find();
   List<DropdownMenuItem<String>> _buildDropdownMenuItems() {
     final months = [
       "January",
@@ -36,7 +44,11 @@ class DashboardScreen extends GetView<DashboardController> {
     }).toList();
   }
 
-  const DashboardScreen({super.key});
+  @override
+  initState() {
+    super.initState();
+    controller.getBoth();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -294,7 +306,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                 color: kSecondaryColor,
                               ),
                             )
-                          : controller.venueOwners.isEmpty
+                          : controller.users.isEmpty
                               ? const Center(child: Text('No players'))
                               : UsersList()),
                     ],

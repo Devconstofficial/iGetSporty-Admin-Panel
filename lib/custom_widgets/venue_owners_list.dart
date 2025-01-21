@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_button.dart';
 import 'package:iget_sporty_admin_panel/custom_widgets/status_selection_dialog.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
@@ -45,7 +46,7 @@ class VenueOwnersList extends StatelessWidget {
             return DataRow(
               cells: [
                 DataCell(Text(
-                  owner.id!,
+                  "${owner.id!.substring(0, 5)}...",
                 )),
                 DataCell(Text(
                   owner.name ?? "N/A",
@@ -85,7 +86,7 @@ class VenueOwnersList extends StatelessWidget {
                 ),
                 DataCell(
                   Container(
-                    height: 33.h,
+                    height: 40.h,
                     width: 99.w,
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     decoration: BoxDecoration(
@@ -112,7 +113,7 @@ class VenueOwnersList extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () {
-                            controller.deleteVenueOwner(owner.id!);
+                            _displayDeleteDialog(owner.id!, context);
                           },
                           child: Image.asset(
                             kBinIcon,
@@ -129,6 +130,96 @@ class VenueOwnersList extends StatelessWidget {
           }).toList(),
         ),
       ),
+    );
+  }
+
+  Future<void> _displayDeleteDialog(String id, BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              width: 300.w,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: (20.h)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: (12.h), horizontal: (20.w)),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Align(
+                        alignment: Alignment.topRight,
+                        child: Icon(
+                          Icons.close,
+                          color: Color(0xFF858D9D),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Image.asset(
+                      kBinIcon,
+                      width: 50.w,
+                      height: (50.h),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      "Confirm Delete",
+                      style: AppStyles.blackTextStyle().copyWith(
+                        color: Colors.black,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: (5.h)),
+                  Center(
+                    child: Text(
+                      "Are you sure you want to delete this user?",
+                      textAlign: TextAlign.center,
+                      style: AppStyles.blackTextStyle().copyWith(
+                        color: Color(0xFFABABAB),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 15.h),
+                  Divider(),
+                  SizedBox(height: 15.h),
+                  Obx(() => controller.userId.value == id
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: kSecondaryColor,
+                          ),
+                        )
+                      : Center(
+                          child: CustomButton(
+                              width: 200,
+                              title: 'Apply',
+                              onTap: () {
+                                controller.deleteUser(id);
+                              }))),
+                  SizedBox(height: (15.h)),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

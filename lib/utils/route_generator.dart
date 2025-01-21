@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/views/pages/auth/auth_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/auth/forgot_password_email_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/auth/forgot_password_otp_screen.dart';
 import 'package:iget_sporty_admin_panel/views/pages/auth/login_screen.dart';
@@ -70,6 +71,10 @@ class RouteGenerator {
       GetPage(
           name: kPhoneVerificationScreenRoute,
           page: () => ForgotPasswordOtpScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kAuthScreenRoute,
+          page: () => const AuthScreen(),
           binding: ScreenBindings()),
     ];
   }

@@ -5,10 +5,10 @@ class Url {
   static const String signUp = 'auth/signup';
   static const String login = 'auth/signin';
   static const String forgotPassword = 'auth/createPassword';
-  static const String getOwners = 'Admin/owner/getOwners';
-  static const String getPlayers = 'owner/player/getPlayers';
+  static const String getOwners = 'admin/owner/getOwners';
+  static const String getPlayers = 'admin/player/getPlayers';
   static const String deleteUser = 'Admin/deleteUser';
   static const String getBooking = 'Admin/booking/getBooking';
   static const String deleteBooking = 'Admin/booking/deleteBooking';
-  static const String updateStatus = 'Admin/venue/updateVenue';
+  static const String updateUserStatus = 'admin/updateUser';
 }

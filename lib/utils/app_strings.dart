@@ -12,3 +12,4 @@ const String kLoginScreenRoute = '/LoginScreenRoute';
 const String kForgotPasswordScreenRoute = '/kForgotPasswordScreenRoute';
 const String kPhoneVerificationScreenRoute = '/PhoneVerificationScreenRoute';
 const String kNewPasswordScreenRoute = '/kNewPasswordScreenRoute';
+const String kAuthScreenRoute = '/kAuthScreenRoute';

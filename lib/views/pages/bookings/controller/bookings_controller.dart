@@ -1,91 +1,48 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/booking_model.dart';
-import 'package:iget_sporty_admin_panel/utils/app_images.dart';
+import 'package:iget_sporty_admin_panel/services/admin_services.dart';
 
 class BookingsController extends GetxController {
   var filteredBookings = <BookingModel>[].obs;
   var searchController = TextEditingController();
   var selectedStatuses = [].obs;
+  var bookings = <BookingModel>[].obs;
   var isApplied = false.obs;
+  var isLoading = false.obs;
+  var bookingId = "".obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    filteredBookings.assignAll(bookings);
+  Future<void> getAllBookings() async {
+    try {
+      isLoading(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllBookings();
+
+      if (response['success'] == true &&
+          response['message']['success'] == true) {
+        var data = response['message']['data'];
+        if (data != null) {
+          bookings.value = List<BookingModel>.from(
+            data.map((venue) => BookingModel.fromJson(venue)),
+          );
+          filteredBookings.assignAll(bookings);
+        }
+      } else {
+        _handleError(response['message']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch players.');
+    } finally {
+      isLoading(false);
+    }
   }
 
-  var bookings = <BookingModel>[
-    BookingModel(
-        id: '0001',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Pending'),
-    BookingModel(
-        id: '0002',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Confirmed'),
-    BookingModel(
-        id: '0003',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Pending'),
-    BookingModel(
-        id: '0004',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Confirmed'),
-    BookingModel(
-        id: '0005',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Pending'),
-    BookingModel(
-        id: '0006',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Confirmed'),
-    BookingModel(
-        id: '0007',
-        venueName: 'Venue1',
-        sports: ['Cricket', 'Table Tennis'],
-        venueImage: [kImg],
-        ownerName: 'Ahmad Ali',
-        venueLocation: 'Lahore',
-        dateTime: DateTime(2024, 17, 12),
-        bookingStatus: 'Pending'),
-  ].obs;
-
-  void deleteBooking(String id) {
-    bookings.removeWhere((booking) => booking.id == id);
-    filteredBookings.removeWhere((booking) => booking.id == id);
-
-    bookings.refresh();
+  void _handleError(String message) {
+    showCustomSnackbar("Error", message);
   }
 
   void searchBookings(String query) {
@@ -98,10 +55,10 @@ class BookingsController extends GetxController {
   }
 
   void filterBookingsByStatuses() {
-    isApplied.value = true;
-    filteredBookings.assignAll(bookings
-        .where((owner) => selectedStatuses.contains(owner.bookingStatus))
-        .toList());
+    // isApplied.value = true;
+    // filteredBookings.assignAll(bookings
+    //     .where((owner) => selectedStatuses.contains(owner.bookingStatus))
+    //     .toList());
   }
 
   void resetFilter() {

@@ -234,7 +234,7 @@ class RevenueScreen extends GetView<RevenueController> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       columns: const [
-                        DataColumn(label: Text('Sport Name')),
+                        // DataColumn(label: Text('Sport Name')),
                         DataColumn(label: Text('Venue Name')),
                         DataColumn(label: Text('Total Bookings')),
                         DataColumn(label: Text('Revenue Generated')),
@@ -242,12 +242,12 @@ class RevenueScreen extends GetView<RevenueController> {
                       rows: controller.venueData.map((booking) {
                         return DataRow(
                           cells: [
-                            DataCell(Text(booking.sports.join(', '))),
+                            // DataCell(Text(booking.sports.join(', '))),
                             DataCell(Text(booking.venueName)),
-                            DataCell(Text('${booking.totalBookings}')),
+                            DataCell(Text('5')),
                             DataCell(
                               Text(
-                                '\$${booking.revenueGenerated!.toStringAsFixed(2)}',
+                                '\$200',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),

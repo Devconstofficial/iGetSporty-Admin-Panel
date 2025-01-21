@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             title: kAppName,
             debugShowCheckedModeBanner: false,
             initialBinding: ScreenBindings(),
-            initialRoute: kLoginScreenRoute,
+            initialRoute: kAuthScreenRoute,
             getPages: RouteGenerator.getPages(),
             builder: (context, child) {
               return child!;
