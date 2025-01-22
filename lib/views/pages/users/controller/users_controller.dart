@@ -25,8 +25,8 @@ class UsersController extends GetxController {
       Map<String, dynamic> response = await AdminServices.viewAllPlayers();
 
       if (response['success'] == true &&
-          response['data']['status'] == "success") {
-        var data = response['data']['data'];
+          response['message']['status'] == "success") {
+        var data = response['message']['data'];
         if (data != null) {
           users.value = List<UserModel>.from(
             data.map((user) => UserModel.fromJson(user)),
@@ -34,7 +34,7 @@ class UsersController extends GetxController {
           filteredUsers.assignAll(users);
         }
       } else {
-        _handleError(response['data']['message'] ?? 'Something went wrong');
+        _handleError(response['message']['message'] ?? 'Something went wrong');
       }
     } catch (e, stackTrace) {
       log('Error: $e\n$stackTrace');
@@ -53,6 +53,9 @@ class UsersController extends GetxController {
       if (response['success'] == true &&
           response['data']['status'] == "success") {
         users.removeWhere((user) => user.id == id);
+        filteredUsers.assignAll(users);
+        users.refresh();
+        filteredUsers.refresh();
         Get.back();
         showCustomSnackbar('Success', response['data']['message'],
             backgroundColor: Colors.green);
@@ -74,12 +77,12 @@ class UsersController extends GetxController {
       Map<String, dynamic> response =
           await AdminServices.updateUserStatus({"status": status}, id);
 
-      if (response['success'] == true &&
-          response['data']['status'] == "success") {
+      log('ress $response');
+
+      if (response['success'] == true && response['data']['success'] == true) {
         final index = users.indexWhere((user) => user.id == id);
         if (index != -1) {
           users[index].status = status;
-          users.refresh();
         }
         final filteredUserIndex =
             filteredUsers.indexWhere((user) => user.id == id);
@@ -88,7 +91,7 @@ class UsersController extends GetxController {
           filteredUsers.refresh();
         }
         Get.back();
-        showCustomSnackbar('Success', response['data']['message'],
+        showCustomSnackbar('Success', 'Status updated successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');
@@ -97,7 +100,7 @@ class UsersController extends GetxController {
       log('Error: $e\n$stackTrace');
       _handleError('Failed to update user.');
     } finally {
-      isUpdating(true);
+      isUpdating(false);
     }
   }
 

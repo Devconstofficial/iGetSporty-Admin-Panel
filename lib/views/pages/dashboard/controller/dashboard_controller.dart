@@ -98,15 +98,15 @@ class DashboardController extends GetxController {
       Map<String, dynamic> response = await AdminServices.viewAllPlayers();
 
       if (response['success'] == true &&
-          response['data']['status'] == "success") {
-        var data = response['data']['data'];
+          response['message']['status'] == "success") {
+        var data = response['message']['data'];
         if (data != null) {
           users.value = List<UserModel>.from(
             data.map((venue) => UserModel.fromJson(venue)),
           ).take(4).toList();
         }
       } else {
-        _handleError(response['data']['message'] ?? 'Something went wrong');
+        _handleError(response['message']['message'] ?? 'Something went wrong');
       }
     } catch (e, stackTrace) {
       log('Error: $e\n$stackTrace');
@@ -126,8 +126,12 @@ class DashboardController extends GetxController {
           response['data']['status'] == "success") {
         if (venueOwners.any((owner) => owner.id == id)) {
           venueOwners.removeWhere((owner) => owner.id == id);
+
+          venueOwners.refresh();
         } else {
           users.removeWhere((user) => user.id == id);
+
+          users.refresh();
         }
         Get.back();
         showCustomSnackbar('Success', response['data']['message'],
@@ -152,21 +156,10 @@ class DashboardController extends GetxController {
 
       if (response['success'] == true &&
           response['data']['status'] == "success") {
-        if (venueOwners.any((owner) => owner.id == id)) {
-          final index = venueOwners.indexWhere((owner) => owner.id == id);
-          if (index != -1) {
-            venueOwners[index].status = status;
-            venueOwners.refresh();
-          }
-        } else {
-          final index = users.indexWhere((user) => user.id == id);
-          if (index != -1) {
-            users[index].status = status;
-            users.refresh();
-          }
-        }
-        Get.back();
-        showCustomSnackbar('Success', response['data']['message'],
+        await getBoth();
+        venueOwners.refresh();
+        users.refresh();
+        showCustomSnackbar('Success', 'Status updated successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');
@@ -175,7 +168,7 @@ class DashboardController extends GetxController {
       log('Error: $e\n$stackTrace');
       _handleError('Failed to update user.');
     } finally {
-      isUpdating(true);
+      isUpdating(false);
     }
   }
 

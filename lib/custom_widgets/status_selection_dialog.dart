@@ -16,7 +16,7 @@ Future<void> showStatusDialog(
   final DashboardController controller = Get.find();
   final VenuesOwnerController venuesOwnerController = Get.find();
   final UsersController usersController = Get.find();
-  List<String> statuses = ["Active", "Pending", "Rejected", "On Hold"];
+  List<String> statuses = ["Active", "Blocked"];
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -171,8 +171,9 @@ Future<void> showStatusDialog(
                               showCustomSnackbar(
                                   'Error', 'Please select a status');
                             } else {
-                              venuesOwnerController.updateOwnerStatus(id,
-                                  venuesOwnerController.selectedStatus.value);
+                              venuesOwnerController.updateOwnerStatus(
+                                  venuesOwnerController.selectedStatus.value,
+                                  id);
 
                               Get.back();
                             }
@@ -182,7 +183,7 @@ Future<void> showStatusDialog(
                                   'Error', 'Please select a status');
                             } else {
                               usersController.updateUserStatus(
-                                  id, usersController.selectedStatus.value);
+                                  usersController.selectedStatus.value, id);
 
                               Get.back();
                             }
@@ -191,13 +192,8 @@ Future<void> showStatusDialog(
                               showCustomSnackbar(
                                   'Error', 'Please select a status');
                             } else {
-                              if (isVenueOwner) {
-                                controller.updateUserStatus(
-                                    id, controller.selectedStatus.value);
-                              } else {
-                                controller.updateUserStatus(
-                                    id, controller.selectedStatus.value);
-                              }
+                              controller.updateUserStatus(
+                                  controller.selectedStatus.value, id);
                               Get.back();
                             }
                           }

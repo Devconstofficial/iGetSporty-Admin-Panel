@@ -58,8 +58,11 @@ class VenuesOwnerController extends GetxController {
       if (response['success'] == true &&
           response['data']['status'] == "success") {
         venueOwners.removeWhere((user) => user.id == id);
+        filteredOwners.assignAll(venueOwners);
+        venueOwners.refresh();
+        filteredOwners.refresh();
         Get.back();
-        showCustomSnackbar('Success', response['data']['message'],
+        showCustomSnackbar('Success', 'Status updated successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');
@@ -102,7 +105,7 @@ class VenuesOwnerController extends GetxController {
       log('Error: $e\n$stackTrace');
       _handleError('Failed to update user.');
     } finally {
-      isUpdating(true);
+      isUpdating(false);
     }
   }
 

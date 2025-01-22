@@ -223,15 +223,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                       SizedBox(height: 36.h),
-                      Obx(() => controller.isLoading.value
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: kSecondaryColor,
-                              ),
-                            )
-                          : controller.venueOwners.isEmpty
-                              ? const Center(child: Text('No owners'))
-                              : VenueOwnersList()),
+                      VenueOwnersList(),
                     ],
                   ),
                 ),
@@ -300,15 +292,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                       SizedBox(height: 36.h),
-                      Obx(() => controller.isLoadingUsers.value
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                                color: kSecondaryColor,
-                              ),
-                            )
-                          : controller.users.isEmpty
-                              ? const Center(child: Text('No players'))
-                              : UsersList()),
+                      UsersList(),
                     ],
                   ),
                 ),

@@ -274,7 +274,7 @@ class _UsersScreenState extends State<UsersScreen> {
                           color: kSecondaryColor,
                         ),
                       )
-                    : controller.users.isEmpty
+                    : controller.filteredUsers.isEmpty
                         ? const Center(child: Text('No players'))
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(15.r),
@@ -397,6 +397,10 @@ class _UsersScreenState extends State<UsersScreen> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
+                                                  controller.selectedStatus
+                                                      .value = "";
+                                                  controller.selectedStatuses
+                                                      .value = [];
                                                   showStatusDialog(
                                                       context, user.id!, false);
                                                 },

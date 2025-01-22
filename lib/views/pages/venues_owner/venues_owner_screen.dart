@@ -261,7 +261,7 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                           color: kSecondaryColor,
                         ),
                       )
-                    : controller.venueOwners.isEmpty
+                    : controller.filteredOwners.isEmpty
                         ? const Center(child: Text('No owners'))
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(15.r),
@@ -307,21 +307,21 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                                   return DataRow(
                                     cells: [
                                       DataCell(onTap: () {
-                                        Get.toNamed(kVenueDetailsScreenRoute,
+                                        Get.toNamed(kUserDetailsScreenRoute,
                                             arguments: owner);
                                       },
                                           Text(
                                             owner.id!,
                                           )),
                                       DataCell(onTap: () {
-                                        Get.toNamed(kVenueDetailsScreenRoute,
+                                        Get.toNamed(kUserDetailsScreenRoute,
                                             arguments: owner);
                                       },
                                           Text(
                                             owner.name ?? "N/A",
                                           )),
                                       DataCell(onTap: () {
-                                        Get.toNamed(kVenueDetailsScreenRoute,
+                                        Get.toNamed(kUserDetailsScreenRoute,
                                             arguments: owner);
                                       },
                                           Text(
@@ -329,7 +329,7 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                                             maxLines: 1,
                                           )),
                                       DataCell(onTap: () {
-                                        Get.toNamed(kVenueDetailsScreenRoute,
+                                        Get.toNamed(kUserDetailsScreenRoute,
                                             arguments: owner);
                                       },
                                           Text(
@@ -384,6 +384,10 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
+                                                  controller.selectedStatus
+                                                      .value = "";
+                                                  controller.selectedStatuses
+                                                      .value = [];
                                                   showStatusDialog(
                                                       context, owner.id!, true);
                                                 },

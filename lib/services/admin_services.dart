@@ -178,6 +178,7 @@ class AdminServices {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
+        body: body,
       );
 
       return jsonDecode(response.body);

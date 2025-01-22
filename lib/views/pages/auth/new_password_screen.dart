@@ -15,7 +15,7 @@ class NewPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final email = Get.arguments;
+    final email = Get.arguments['email'];
     return Scaffold(
       backgroundColor: kWhiteColor,
       body: Padding(

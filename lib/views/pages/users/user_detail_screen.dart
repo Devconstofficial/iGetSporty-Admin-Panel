@@ -5,6 +5,7 @@ import 'package:iget_sporty_admin_panel/custom_widgets/custom_textfield.dart';
 import 'package:iget_sporty_admin_panel/models/user_model.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_styles.dart';
+import 'package:image_network/image_network.dart';
 import 'package:intl/intl.dart';
 
 class UserDetailScreen extends StatelessWidget {
@@ -39,7 +40,7 @@ class UserDetailScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             CustomTextField(
-              controller: TextEditingController(text: user.name),
+              controller: TextEditingController(text: user.name ?? "N/A"),
               hintText: '',
               readOnly: true,
             ),
@@ -53,7 +54,7 @@ class UserDetailScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             CustomTextField(
-              controller: TextEditingController(text: user.gender),
+              controller: TextEditingController(text: user.gender ?? "N/A"),
               hintText: '',
               readOnly: true,
             ),
@@ -68,7 +69,9 @@ class UserDetailScreen extends StatelessWidget {
             SizedBox(height: 12.h),
             CustomTextField(
               controller: TextEditingController(
-                  text: DateFormat('MM/dd/yyyy').format(user.dateOfBirth!)),
+                  text: user.dateOfBirth != null
+                      ? DateFormat('MM/dd/yyyy').format(user.dateOfBirth!)
+                      : "N/A"),
               hintText: '',
               readOnly: true,
             ),
@@ -82,7 +85,7 @@ class UserDetailScreen extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             CustomTextField(
-              controller: TextEditingController(text: user.city),
+              controller: TextEditingController(text: user.city ?? "N/A"),
               hintText: '',
               readOnly: true,
             ),
@@ -100,7 +103,7 @@ class UserDetailScreen extends StatelessWidget {
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
-                itemCount: user.interestedSports!.length,
+                itemCount: user.interestedSports?.length ?? 0,
                 itemBuilder: (context, index) {
                   String sport = user.interestedSports![index];
                   return Padding(
@@ -137,21 +140,55 @@ class UserDetailScreen extends StatelessWidget {
                   color: kBlackShadeColor),
             ),
             SizedBox(height: 12.h),
-            Padding(
-              padding: EdgeInsets.only(right: 8.w),
-              child: Image.network(
-                user.cnicFrontImage!,
+            if (user.cnicFrontImage != null)
+              Padding(
+                padding: EdgeInsets.only(right: 8.w),
+                child: ImageNetwork(
+                  image: user.cnicFrontImage!,
+                  height: 112.h,
+                  width: 167.w,
+                  duration: 1500,
+                  curve: Curves.easeIn,
+                  onPointer: true,
+                  debugPrint: false,
+                  fitAndroidIos: BoxFit.cover,
+                  fitWeb: BoxFitWeb.cover,
+                  onError:
+                      Icon(Icons.broken_image, size: 32.h, color: kGreyColor),
+                  onLoading: const CircularProgressIndicator(
+                    color: kSecondaryColor,
+                  ),
+                ),
+              )
+            else
+              Text(
+                "Front image not available",
+                style: AppStyles.blackTextStyle()
+                    .copyWith(color: kGreyColor, fontSize: 14.sp),
+              ),
+            if (user.cnicBackImage != null)
+              ImageNetwork(
+                image: user.cnicBackImage!,
                 height: 112.h,
                 width: 167.w,
-                fit: BoxFit.cover,
+                duration: 1500,
+                curve: Curves.easeIn,
+                onPointer: true,
+                debugPrint: false,
+                fitAndroidIos: BoxFit.cover,
+                fitWeb: BoxFitWeb.cover,
+                onError:
+                    Icon(Icons.broken_image, size: 32.h, color: kGreyColor),
+                onLoading: const CircularProgressIndicator(
+                  color: kSecondaryColor,
+                ),
+              )
+            else
+              Text(
+                "Back image not available",
+                style: AppStyles.blackTextStyle()
+                    .copyWith(color: kGreyColor, fontSize: 14.sp),
               ),
-            ),
-            Image.network(
-              user.cnicBackImage!,
-              height: 112.h,
-              width: 167.w,
-              fit: BoxFit.cover,
-            ),
             SizedBox(height: 12.h),
           ],
         ),
