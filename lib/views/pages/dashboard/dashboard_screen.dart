@@ -292,7 +292,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                       SizedBox(height: 36.h),
-                      UsersList(),
+                      Obx(() => controller.isLoadingUsers.value
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: kSecondaryColor,
+                              ),
+                            )
+                          : controller.users.isEmpty
+                              ? const Center(child: Text('No players'))
+                              : UsersList()),
                     ],
                   ),
                 ),

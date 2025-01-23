@@ -11,12 +11,20 @@ import 'package:iget_sporty_admin_panel/views/pages/venues_owner/controller/venu
 import '../views/pages/dashboard/controller/dashboard_controller.dart';
 
 Future<void> showStatusDialog(
-    BuildContext context, String id, bool isVenueOwner,
-    {bool isFilter = false}) {
+  BuildContext context,
+  String id,
+  bool isVenueOwner, {
+  bool isFilter = false,
+  bool isDashboard = false,
+}) {
   final DashboardController controller = Get.find();
   final VenuesOwnerController venuesOwnerController = Get.find();
   final UsersController usersController = Get.find();
   List<String> statuses = ["Active", "Blocked"];
+  controller.selectedStatus.value = "";
+  usersController.selectedStatus.value = "";
+  venuesOwnerController.selectedStatus.value = "";
+
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -67,11 +75,11 @@ Future<void> showStatusDialog(
                                   .add(status);
                             }
                           }
-                        } else if (!isFilter && isVenueOwner) {
+                        } else if (!isFilter && isVenueOwner && !isDashboard) {
                           venuesOwnerController.selectedStatus.value = status;
-                        } else if (!isFilter && !isVenueOwner) {
+                        } else if (!isFilter && !isVenueOwner && !isDashboard) {
                           usersController.selectedStatus.value = status;
-                        } else {
+                        } else if (!isFilter && !isVenueOwner && isDashboard) {
                           controller.selectedStatus.value = status;
                         }
                       },
@@ -165,7 +173,9 @@ Future<void> showStatusDialog(
                                 Get.back();
                               }
                             }
-                          } else if (!isFilter && isVenueOwner) {
+                          } else if (!isFilter &&
+                              isVenueOwner &&
+                              !isDashboard) {
                             if (venuesOwnerController.selectedStatus.value ==
                                 '') {
                               showCustomSnackbar(
@@ -177,7 +187,9 @@ Future<void> showStatusDialog(
 
                               Get.back();
                             }
-                          } else if (!isFilter && !isVenueOwner) {
+                          } else if (!isFilter &&
+                              !isVenueOwner &&
+                              !isDashboard) {
                             if (usersController.selectedStatus.value == '') {
                               showCustomSnackbar(
                                   'Error', 'Please select a status');
@@ -187,7 +199,9 @@ Future<void> showStatusDialog(
 
                               Get.back();
                             }
-                          } else {
+                          } else if (!isFilter &&
+                              !isVenueOwner &&
+                              isDashboard) {
                             if (controller.selectedStatus.value == '') {
                               showCustomSnackbar(
                                   'Error', 'Please select a status');

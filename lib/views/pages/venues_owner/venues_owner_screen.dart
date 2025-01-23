@@ -12,8 +12,21 @@ import 'package:intl/intl.dart';
 
 import '../../../utils/app_styles.dart';
 
-class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
+class VenuesOwnerScreen extends StatefulWidget {
   const VenuesOwnerScreen({super.key});
+
+  @override
+  State<VenuesOwnerScreen> createState() => _VenuesOwnerScreenState();
+}
+
+class _VenuesOwnerScreenState extends State<VenuesOwnerScreen> {
+  final VenuesOwnerController controller = Get.find();
+
+  @override
+  initState() {
+    super.initState();
+    controller.getAllOwners();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,8 +148,7 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (controller.selectedDates.isEmpty &&
-                          controller.selectedStatuses.isEmpty) {
+                      if (!controller.isApplied.value) {
                         showDateFilterDialog(context);
                       }
                     },
@@ -384,10 +396,6 @@ class VenuesOwnerScreen extends GetView<VenuesOwnerController> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  controller.selectedStatus
-                                                      .value = "";
-                                                  controller.selectedStatuses
-                                                      .value = [];
                                                   showStatusDialog(
                                                       context, owner.id!, true);
                                                 },

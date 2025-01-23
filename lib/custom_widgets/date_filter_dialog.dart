@@ -173,7 +173,7 @@ void showDateFilterDialog(BuildContext context, {bool isUser = false}) {
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     backgroundColor: kSecondaryColor,
-                    minimumSize: Size(129.w, 35.h),
+                    minimumSize: Size(129.w, 45.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),

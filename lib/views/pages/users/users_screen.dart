@@ -148,8 +148,7 @@ class _UsersScreenState extends State<UsersScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (controller.selectedDates.isEmpty &&
-                          controller.selectedStatuses.isEmpty) {
+                      if (!controller.isApplied.value) {
                         showDateFilterDialog(context, isUser: true);
                       }
                     },
@@ -397,10 +396,6 @@ class _UsersScreenState extends State<UsersScreen> {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  controller.selectedStatus
-                                                      .value = "";
-                                                  controller.selectedStatuses
-                                                      .value = [];
                                                   showStatusDialog(
                                                       context, user.id!, false);
                                                 },

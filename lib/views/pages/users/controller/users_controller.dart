@@ -72,6 +72,7 @@ class UsersController extends GetxController {
 
   Future<void> updateUserStatus(String status, String id) async {
     try {
+      isApplied.value = true;
       isUpdating(true);
 
       Map<String, dynamic> response =

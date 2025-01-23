@@ -17,11 +17,6 @@ class VenuesOwnerController extends GetxController {
   var isLoading = false.obs;
   var userId = ''.obs;
   var isUpdating = false.obs;
-  @override
-  void onInit() {
-    super.onInit();
-    getAllOwners();
-  }
 
   Future<void> getAllOwners() async {
     try {
@@ -77,6 +72,7 @@ class VenuesOwnerController extends GetxController {
 
   Future<void> updateOwnerStatus(String status, String id) async {
     try {
+      isApplied.value = true;
       isUpdating(true);
 
       Map<String, dynamic> response =

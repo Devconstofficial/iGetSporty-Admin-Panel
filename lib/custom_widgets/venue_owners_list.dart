@@ -110,10 +110,9 @@ class VenueOwnersList extends StatelessWidget {
                                 children: [
                                   GestureDetector(
                                     onTap: () {
-                                      controller.selectedStatus.value = "";
-
                                       showStatusDialog(
-                                          context, owner.id!, true);
+                                          context, owner.id!, false,
+                                          isDashboard: true);
                                     },
                                     child: Image.asset(
                                       kEditIcon,

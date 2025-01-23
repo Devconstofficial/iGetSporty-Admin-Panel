@@ -154,11 +154,21 @@ class DashboardController extends GetxController {
       Map<String, dynamic> response =
           await AdminServices.updateUserStatus({"status": status}, id);
 
-      if (response['success'] == true &&
-          response['data']['status'] == "success") {
-        await getBoth();
-        venueOwners.refresh();
-        users.refresh();
+      if (response['success'] == true && response['data']['success'] == true) {
+        if (users.any((element) => element.id == id)) {
+          final index = users.indexWhere((user) => user.id == id);
+          if (index != -1) {
+            users[index].status = status;
+            users.refresh();
+          }
+        } else {
+          final index = venueOwners.indexWhere((user) => user.id == id);
+          if (index != -1) {
+            venueOwners[index].status = status;
+            venueOwners.refresh();
+          }
+        }
+
         showCustomSnackbar('Success', 'Status updated successfully',
             backgroundColor: Colors.green);
       } else {
