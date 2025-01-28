@@ -145,16 +145,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SizedBox(height: 28.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 26.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildCard("Active Users", "1200", kPrimaryColor),
-                      _buildCard("Active Venues", "120", kSecondaryColor),
-                      _buildCard("Bookings This Week", "85", kPrimaryColor),
-                      _buildCard(
-                          "Revenue This Month", "500 Rs", kSecondaryColor),
-                    ],
-                  ),
+                  child: Obx(() => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildCard("Active Users",
+                              controller.totalUsers.value, kPrimaryColor),
+                          _buildCard(
+                              "Active Venues Owners",
+                              controller.totalVenueOwners.value,
+                              kSecondaryColor),
+                          _buildCard(
+                              "Bookings This Week",
+                              controller.totalBookingsThisWeek.value,
+                              kPrimaryColor),
+                          _buildCard(
+                              "Revenue This Month", "500 Rs", kSecondaryColor),
+                        ],
+                      )),
                 ),
                 SizedBox(height: 24.h),
                 const TotalRevenueChart(),

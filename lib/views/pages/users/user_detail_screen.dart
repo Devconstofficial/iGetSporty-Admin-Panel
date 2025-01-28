@@ -140,55 +140,58 @@ class UserDetailScreen extends StatelessWidget {
                   color: kBlackShadeColor),
             ),
             SizedBox(height: 12.h),
-            if (user.cnicFrontImage != null)
-              Padding(
-                padding: EdgeInsets.only(right: 8.w),
-                child: ImageNetwork(
-                  image: user.cnicFrontImage!,
-                  height: 112.h,
-                  width: 167.w,
-                  duration: 1500,
-                  curve: Curves.easeIn,
-                  onPointer: true,
-                  debugPrint: false,
-                  fitAndroidIos: BoxFit.cover,
-                  fitWeb: BoxFitWeb.cover,
-                  onError:
-                      Icon(Icons.broken_image, size: 32.h, color: kGreyColor),
-                  onLoading: const CircularProgressIndicator(
-                    color: kSecondaryColor,
-                  ),
-                ),
-              )
-            else
-              Text(
-                "Front image not available",
-                style: AppStyles.blackTextStyle()
-                    .copyWith(color: kGreyColor, fontSize: 14.sp),
-              ),
-            if (user.cnicBackImage != null)
-              ImageNetwork(
-                image: user.cnicBackImage!,
-                height: 112.h,
-                width: 167.w,
-                duration: 1500,
-                curve: Curves.easeIn,
-                onPointer: true,
-                debugPrint: false,
-                fitAndroidIos: BoxFit.cover,
-                fitWeb: BoxFitWeb.cover,
-                onError:
-                    Icon(Icons.broken_image, size: 32.h, color: kGreyColor),
-                onLoading: const CircularProgressIndicator(
-                  color: kSecondaryColor,
-                ),
-              )
-            else
-              Text(
-                "Back image not available",
-                style: AppStyles.blackTextStyle()
-                    .copyWith(color: kGreyColor, fontSize: 14.sp),
-              ),
+            Row(
+              children: [
+                user.cnicFrontImage != null
+                    ? Padding(
+                        padding: EdgeInsets.only(right: 8.w),
+                        child: ImageNetwork(
+                          image: user.cnicFrontImage!,
+                          height: 112.h,
+                          width: 167.w,
+                          duration: 1500,
+                          curve: Curves.easeIn,
+                          onPointer: true,
+                          debugPrint: false,
+                          fitAndroidIos: BoxFit.cover,
+                          fitWeb: BoxFitWeb.cover,
+                          onError: Icon(Icons.broken_image,
+                              size: 32.h, color: kGreyColor),
+                          onLoading: const CircularProgressIndicator(
+                            color: kSecondaryColor,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        "Front image not available",
+                        style: AppStyles.blackTextStyle()
+                            .copyWith(color: kGreyColor, fontSize: 14.sp),
+                      ),
+                SizedBox(width: 12.w),
+                user.cnicBackImage != null
+                    ? ImageNetwork(
+                        image: user.cnicBackImage!,
+                        height: 112.h,
+                        width: 167.w,
+                        duration: 1500,
+                        curve: Curves.easeIn,
+                        onPointer: true,
+                        debugPrint: false,
+                        fitAndroidIos: BoxFit.cover,
+                        fitWeb: BoxFitWeb.cover,
+                        onError: Icon(Icons.broken_image,
+                            size: 32.h, color: kGreyColor),
+                        onLoading: const CircularProgressIndicator(
+                          color: kSecondaryColor,
+                        ),
+                      )
+                    : Text(
+                        "Back image not available",
+                        style: AppStyles.blackTextStyle()
+                            .copyWith(color: kGreyColor, fontSize: 14.sp),
+                      ),
+              ],
+            ),
             SizedBox(height: 12.h),
           ],
         ),

@@ -47,24 +47,24 @@ class NotificationsAndActivities extends StatelessWidget {
                   },
                 )),
             SizedBox(height: 32.h),
-            Text(
-              "Activities",
-              style: GoogleFonts.inter(
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
-                color: kSideBarTextColor,
-              ),
-            ),
-            SizedBox(height: 16.h),
-            Obx(() => ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.activities.length,
-                  itemBuilder: (context, index) {
-                    final activity = controller.activities[index];
-                    return _buildActivityItem(activity);
-                  },
-                )),
+            // Text(
+            //   "Activities",
+            //   style: GoogleFonts.inter(
+            //     fontWeight: FontWeight.w600,
+            //     fontSize: 14.sp,
+            //     color: kSideBarTextColor,
+            //   ),
+            // ),
+            // SizedBox(height: 16.h),
+            // Obx(() => ListView.builder(
+            //       shrinkWrap: true,
+            //       physics: const NeverScrollableScrollPhysics(),
+            //       itemCount: controller.activities.length,
+            //       itemBuilder: (context, index) {
+            //         final activity = controller.activities[index];
+            //         return _buildActivityItem(activity);
+            //       },
+            //     )),
           ],
         ),
       ),

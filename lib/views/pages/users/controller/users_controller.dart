@@ -57,7 +57,7 @@ class UsersController extends GetxController {
         users.refresh();
         filteredUsers.refresh();
         Get.back();
-        showCustomSnackbar('Success', response['data']['message'],
+        showCustomSnackbar('Success', 'User deleted successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');

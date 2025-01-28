@@ -104,8 +104,8 @@ class UsersList extends StatelessWidget {
                         },
                         child: Image.asset(
                           kEditIcon,
-                          height: 16.h,
-                          width: 16.w,
+                          height: 24.h,
+                          width: 20.w,
                         ),
                       ),
                       Container(
@@ -118,8 +118,8 @@ class UsersList extends StatelessWidget {
                         },
                         child: Image.asset(
                           kBinIcon,
-                          height: 16.h,
-                          width: 16.w,
+                          height: 18.h,
+                          width: 18.w,
                         ),
                       )
                     ],

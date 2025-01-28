@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/activity_model.dart';
+import 'package:iget_sporty_admin_panel/models/booking_model.dart';
 import 'package:iget_sporty_admin_panel/models/notification_model.dart';
 import 'package:iget_sporty_admin_panel/models/user_model.dart';
 import 'package:iget_sporty_admin_panel/services/admin_services.dart';
@@ -19,11 +20,16 @@ class DashboardController extends GetxController {
   var selectedUserId = ''.obs;
   var userId = ''.obs;
   var isUpdating = false.obs;
+  var totalUsers = "0".obs;
+  var totalVenueOwners = "0".obs;
+  var totalBookingsThisWeek = "0".obs;
+  var bookings = <BookingModel>[].obs;
 
   getBoth() async {
     Future.wait([
       getAllOwners(),
       getAllPlayers(),
+      getAllBookings(),
     ]);
   }
 
@@ -76,9 +82,14 @@ class DashboardController extends GetxController {
           response['data']['status'] == "success") {
         var data = response['data']['data'];
         if (data != null) {
-          venueOwners.value = List<UserModel>.from(
+          var owners = List<UserModel>.from(
             data.map((venue) => UserModel.fromJson(venue)),
-          ).take(4).toList();
+          );
+          venueOwners.value = owners.take(4).toList();
+          totalVenueOwners.value = owners
+              .where((owner) => owner.status == "Active")
+              .length
+              .toString();
         }
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');
@@ -101,9 +112,12 @@ class DashboardController extends GetxController {
           response['message']['status'] == "success") {
         var data = response['message']['data'];
         if (data != null) {
-          users.value = List<UserModel>.from(
+          var user = List<UserModel>.from(
             data.map((venue) => UserModel.fromJson(venue)),
-          ).take(4).toList();
+          );
+          users.value = user.take(4).toList();
+          totalUsers.value =
+              user.where((user) => user.status == "Active").length.toString();
         }
       } else {
         _handleError(response['message']['message'] ?? 'Something went wrong');
@@ -113,6 +127,51 @@ class DashboardController extends GetxController {
       _handleError('Failed to fetch players.');
     } finally {
       isLoadingUsers(false);
+    }
+  }
+
+  Future<void> getAllBookings() async {
+    try {
+      isLoading(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllBookings();
+
+      if (response['success'] == true &&
+          response['message']['success'] == true) {
+        var data = response['message']['data'];
+        if (data != null) {
+          bookings.value = List<BookingModel>.from(
+            data.map((venue) => BookingModel.fromJson(venue)),
+          );
+          totalBookingsThisWeek.value = bookings
+              .where((booking) => _isThisWeek(booking.date))
+              .length
+              .toString();
+        }
+      } else {
+        _handleError(response['message']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch players.');
+    } finally {
+      isLoading(false);
+    }
+  }
+
+  bool _isThisWeek(String dateString) {
+    try {
+      DateTime bookingDate = DateTime.parse(dateString);
+      DateTime now = DateTime.now();
+      DateTime startOfWeek =
+          now.subtract(Duration(days: now.weekday - 1)); // Monday
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 6)); // Sunday
+
+      return bookingDate.isAfter(startOfWeek) &&
+          bookingDate.isBefore(endOfWeek.add(Duration(days: 1)));
+    } catch (e) {
+      log('Error parsing date: $e');
+      return false;
     }
   }
 
@@ -134,7 +193,7 @@ class DashboardController extends GetxController {
           users.refresh();
         }
         Get.back();
-        showCustomSnackbar('Success', response['data']['message'],
+        showCustomSnackbar('Success', 'Deleted successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');

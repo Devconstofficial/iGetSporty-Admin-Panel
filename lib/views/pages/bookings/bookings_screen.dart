@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/date_filter_dialog.dart';
 import 'package:iget_sporty_admin_panel/custom_widgets/status_selection_dialog.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 import 'package:iget_sporty_admin_panel/utils/app_strings.dart';
 import 'package:iget_sporty_admin_panel/views/pages/bookings/controller/bookings_controller.dart';
+import 'package:intl/intl.dart';
 import '../../../utils/app_styles.dart';
 
 class BookingsScreen extends StatefulWidget {
@@ -145,19 +147,23 @@ class _BookingsScreenState extends State<BookingsScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (controller.selectedStatuses.isEmpty) {
-                        showBookingStatusDialog(context);
-                      }
+                      showDateFilterDialog(context, isUser: true);
                     },
                     child: Obx(() => Row(
                           children: [
                             SizedBox(
-                              width: 100.w,
+                              width: controller.selectedDates.isNotEmpty &&
+                                      controller.isApplied.value
+                                  ? 90.w
+                                  : 35.w,
                               child: Text(
                                 controller.isApplied.value &&
-                                        controller.selectedStatuses.isNotEmpty
-                                    ? controller.selectedStatuses.join(',')
-                                    : "Booking Status",
+                                        controller.selectedDates.isNotEmpty
+                                    ? controller.selectedDates
+                                        .map((date) =>
+                                            DateFormat('d MMM y').format(date))
+                                        .join(', ')
+                                    : "Date",
                                 style: AppStyles.blackTextStyle().copyWith(
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w700,
@@ -224,7 +230,7 @@ class _BookingsScreenState extends State<BookingsScreen> {
                           color: kSecondaryColor,
                         ),
                       )
-                    : controller.bookings.isEmpty
+                    : controller.filteredBookings.isEmpty
                         ? const Center(child: Text('No bookings'))
                         : ClipRRect(
                             borderRadius: BorderRadius.circular(15.r),
