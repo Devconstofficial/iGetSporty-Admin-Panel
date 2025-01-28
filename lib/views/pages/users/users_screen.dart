@@ -114,7 +114,7 @@ class _UsersScreenState extends State<UsersScreen> {
               padding: EdgeInsets.symmetric(horizontal: 24.w),
               margin: EdgeInsets.only(
                   left: 37.w,
-                  right: controller.isApplied.value ? 528.w : 718.w),
+                  right: controller.isApplied.value ? 630.w : 850.w),
               decoration: BoxDecoration(
                 border: Border.all(color: kGreyShad1Color, width: 0.6),
                 color: kWhiteShadeColor,
@@ -142,61 +142,61 @@ class _UsersScreenState extends State<UsersScreen> {
                         fontWeight: FontWeight.w700,
                         color: kBlackShadeColor),
                   ),
+                  // Container(
+                  //   width: 0.6.w,
+                  //   color: kGreyShade2Color,
+                  // ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     if (!controller.isApplied.value) {
+                  //       showDateFilterDialog(context, isUser: true);
+                  //     }
+                  //   },
+                  //   child: Obx(() => Row(
+                  //         children: [
+                  //           SizedBox(
+                  //             width: controller.selectedDates.isNotEmpty &&
+                  //                     controller.isApplied.value
+                  //                 ? 90.w
+                  //                 : 35.w,
+                  //             child: Text(
+                  //               controller.isApplied.value &&
+                  //                       controller.selectedDates.isNotEmpty
+                  //                   ? controller.selectedDates
+                  //                       .map((date) =>
+                  //                           DateFormat('d MMM y').format(date))
+                  //                       .join(', ')
+                  //                   : "Date",
+                  //               style: AppStyles.blackTextStyle().copyWith(
+                  //                   fontSize: 14.sp,
+                  //                   fontWeight: FontWeight.w700,
+                  //                   color: controller.isApplied.value
+                  //                       ? kBlackShadeColor.withOpacity(0.5)
+                  //                       : kBlackShadeColor,
+                  //                   overflow: TextOverflow.ellipsis),
+                  //             ),
+                  //           ),
+                  //           SizedBox(width: 15.w),
+                  //           Icon(
+                  //             Icons.keyboard_arrow_down,
+                  //             color: controller.isApplied.value
+                  //                 ? kBlackShadeColor.withOpacity(0.5)
+                  //                 : kBlackShadeColor,
+                  //             size: 18.sp,
+                  //           )
+                  //         ],
+                  //       )),
+                  // ),
                   Container(
                     width: 0.6.w,
                     color: kGreyShade2Color,
                   ),
                   InkWell(
                     onTap: () {
-                      if (!controller.isApplied.value) {
-                        showDateFilterDialog(context, isUser: true);
-                      }
-                    },
-                    child: Obx(() => Row(
-                          children: [
-                            SizedBox(
-                              width: controller.selectedDates.isNotEmpty &&
-                                      controller.isApplied.value
-                                  ? 90.w
-                                  : 35.w,
-                              child: Text(
-                                controller.isApplied.value &&
-                                        controller.selectedDates.isNotEmpty
-                                    ? controller.selectedDates
-                                        .map((date) =>
-                                            DateFormat('d MMM y').format(date))
-                                        .join(', ')
-                                    : "Date",
-                                style: AppStyles.blackTextStyle().copyWith(
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: controller.isApplied.value
-                                        ? kBlackShadeColor.withOpacity(0.5)
-                                        : kBlackShadeColor,
-                                    overflow: TextOverflow.ellipsis),
-                              ),
-                            ),
-                            SizedBox(width: 15.w),
-                            Icon(
-                              Icons.keyboard_arrow_down,
-                              color: controller.isApplied.value
-                                  ? kBlackShadeColor.withOpacity(0.5)
-                                  : kBlackShadeColor,
-                              size: 18.sp,
-                            )
-                          ],
-                        )),
-                  ),
-                  Container(
-                    width: 0.6.w,
-                    color: kGreyShade2Color,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      if (controller.selectedStatuses.isEmpty &&
-                          controller.selectedDates.isEmpty) {
-                        showStatusDialog(context, '0', false, isFilter: true);
-                      }
+                      // if (controller.selectedStatuses.isEmpty &&
+                      //     controller.selectedDates.isEmpty) {
+                      showStatusDialog(context, '0', false, isFilter: true);
+                      // }
                     },
                     child: Obx(() => Row(
                           children: [
@@ -216,7 +216,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                     overflow: TextOverflow.ellipsis),
                               ),
                             ),
-                            SizedBox(width: 15.w),
+                            SizedBox(width: 12.w),
                             Icon(
                               Icons.keyboard_arrow_down,
                               color: controller.isApplied.value
@@ -378,10 +378,11 @@ class _UsersScreenState extends State<UsersScreen> {
                                       ),
                                       DataCell(
                                         Container(
-                                          height: 33.h,
+                                          height: 40.h,
                                           width: 99.w,
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 16.w),
+                                            horizontal: 16.w,
+                                          ),
                                           decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: kGreyShad1Color,
@@ -401,8 +402,8 @@ class _UsersScreenState extends State<UsersScreen> {
                                                 },
                                                 child: Image.asset(
                                                   kEditIcon,
-                                                  height: 16.h,
-                                                  width: 16.w,
+                                                  height: 24.h,
+                                                  width: 20.w,
                                                 ),
                                               ),
                                               Container(
@@ -416,8 +417,8 @@ class _UsersScreenState extends State<UsersScreen> {
                                                 },
                                                 child: Image.asset(
                                                   kBinIcon,
-                                                  height: 16.h,
-                                                  width: 16.w,
+                                                  height: 18.h,
+                                                  width: 18.w,
                                                 ),
                                               )
                                             ],

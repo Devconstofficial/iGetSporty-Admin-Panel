@@ -14,6 +14,7 @@ class BookingsController extends GetxController {
   var isApplied = false.obs;
   var isLoading = false.obs;
   var bookingId = "".obs;
+  var selectedDates = <DateTime>[].obs;
 
   Future<void> getAllBookings() async {
     try {
@@ -52,6 +53,26 @@ class BookingsController extends GetxController {
       filteredBookings.assignAll(bookings.where((booking) =>
           booking.venueName.toLowerCase().contains(query.toLowerCase())));
     }
+  }
+
+  void filterBookingsByDates() {
+    isApplied.value = true;
+    if (selectedDates.isEmpty) {
+      filteredBookings
+          .assignAll(bookings); // If no dates are selected, show all bookings
+      return;
+    }
+
+    filteredBookings.assignAll(
+      bookings.where((booking) {
+        return selectedDates.any((selectedDate) {
+          // Parse booking.date to DateTime and compare only the date part
+          DateTime bookingDate = DateTime.parse(booking.date).toLocal();
+          return bookingDate.toIso8601String().substring(0, 10) ==
+              selectedDate.toLocal().toIso8601String().substring(0, 10);
+        });
+      }).toList(),
+    );
   }
 
   void filterBookingsByStatuses() {

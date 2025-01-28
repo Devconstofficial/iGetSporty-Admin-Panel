@@ -4,14 +4,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_styles.dart';
+import 'package:iget_sporty_admin_panel/views/pages/bookings/controller/bookings_controller.dart';
 import 'package:iget_sporty_admin_panel/views/pages/venues_owner/controller/venues_owner_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../views/pages/users/controller/users_controller.dart';
 
 void showDateFilterDialog(BuildContext context, {bool isUser = false}) {
-  final VenuesOwnerController controller = Get.find();
-  final UsersController usersController = Get.find();
+  final BookingsController controller = Get.find();
   showDialog(
     context: context,
     builder: (context) {
@@ -29,17 +29,13 @@ void showDateFilterDialog(BuildContext context, {bool isUser = false}) {
                 child: SizedBox(
                   width: 322.w,
                   child: Obx(() => TableCalendar(
-                        focusedDay: isUser
-                            ? usersController.selectedDates.isNotEmpty
-                                ? usersController.selectedDates.last
-                                : DateTime.now()
-                            : controller.selectedDates.isNotEmpty
-                                ? controller.selectedDates.last
-                                : DateTime.now(),
+                        focusedDay: controller.selectedDates.isNotEmpty
+                            ? controller.selectedDates.last
+                            : DateTime.now(),
                         firstDay: DateTime(2000),
                         lastDay: DateTime(2100),
                         rowHeight: 42.h,
-                        daysOfWeekHeight: 22.h,
+                        daysOfWeekHeight: 25.h,
                         headerStyle: HeaderStyle(
                             titleTextStyle: AppStyles.blackTextStyle().copyWith(
                               fontSize: 15.sp,
@@ -115,27 +111,14 @@ void showDateFilterDialog(BuildContext context, {bool isUser = false}) {
                           ),
                         ),
                         selectedDayPredicate: (day) {
-                          return isUser
-                              ? usersController.selectedDates
-                                  .any((selected) => isSameDay(selected, day))
-                              : controller.selectedDates
-                                  .any((selected) => isSameDay(selected, day));
+                          return controller.selectedDates
+                              .any((selected) => isSameDay(selected, day));
                         },
                         onDaySelected: (selectedDay, focusedDay) {
-                          if (isUser) {
-                            if (usersController.selectedDates
-                                .contains(selectedDay)) {
-                              usersController.selectedDates.remove(selectedDay);
-                            } else {
-                              usersController.selectedDates.add(selectedDay);
-                            }
+                          if (controller.selectedDates.contains(selectedDay)) {
+                            controller.selectedDates.remove(selectedDay);
                           } else {
-                            if (controller.selectedDates
-                                .contains(selectedDay)) {
-                              controller.selectedDates.remove(selectedDay);
-                            } else {
-                              controller.selectedDates.add(selectedDay);
-                            }
+                            controller.selectedDates.add(selectedDay);
                           }
                         },
                         calendarFormat: CalendarFormat.month,
@@ -162,18 +145,13 @@ void showDateFilterDialog(BuildContext context, {bool isUser = false}) {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    if (isUser) {
-                      usersController.filterUsersByDate();
-                      Get.back();
-                    } else {
-                      controller.filterOwnersByDate();
-                      Get.back();
-                    }
+                    controller.filterBookingsByDates();
+                    Get.back();
                   },
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     backgroundColor: kSecondaryColor,
-                    minimumSize: Size(129.w, 45.h),
+                    minimumSize: Size(129.w, 55.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),

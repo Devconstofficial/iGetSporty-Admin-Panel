@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:iget_sporty_admin_panel/services/shared_preferences.dart';
 import 'package:iget_sporty_admin_panel/utils/app_colors.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
+import 'package:iget_sporty_admin_panel/utils/app_strings.dart';
 import 'package:iget_sporty_admin_panel/utils/app_styles.dart';
 import 'controller/side_bar_screen_controller.dart';
 
@@ -62,6 +63,7 @@ class SideBarScreen extends GetView<SideBarController> {
                     onTap: () {
                       final PreferencesService prefs = PreferencesService();
                       prefs.clearUserData();
+                      Get.offAllNamed(kLoginScreenRoute);
                     },
                   ),
                 ),

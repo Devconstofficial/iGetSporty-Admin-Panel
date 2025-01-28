@@ -57,7 +57,7 @@ class VenuesOwnerController extends GetxController {
         venueOwners.refresh();
         filteredOwners.refresh();
         Get.back();
-        showCustomSnackbar('Success', 'Status updated successfully',
+        showCustomSnackbar('Success', 'Owner deleted successfully',
             backgroundColor: Colors.green);
       } else {
         _handleError(response['data']['message'] ?? 'Something went wrong');
