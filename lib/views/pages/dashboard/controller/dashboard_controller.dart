@@ -1,43 +1,31 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/activity_model.dart';
 import 'package:iget_sporty_admin_panel/models/notification_model.dart';
 import 'package:iget_sporty_admin_panel/models/user_model.dart';
-import 'package:iget_sporty_admin_panel/models/venue_owner_model.dart';
+import 'package:iget_sporty_admin_panel/services/admin_services.dart';
 import 'package:iget_sporty_admin_panel/utils/app_images.dart';
 
 class DashboardController extends GetxController {
   var selectedMonth = "January".obs;
   var selectedStatus = ''.obs;
-  var venueOwners = <VenueOwnerModel>[
-    VenueOwnerModel(
-        id: '0001',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis']),
-    VenueOwnerModel(
-        id: '0002',
-        name: "John Doe",
-        city: "NYC",
-        ownerStatus: "Active",
-        sports: ['Cricket', 'Table Tennis']),
-  ].obs;
+  var venueOwners = <UserModel>[].obs;
+  var users = <UserModel>[].obs;
+  var isLoading = false.obs;
+  var isLoadingUsers = false.obs;
+  var selectedUserId = ''.obs;
+  var userId = ''.obs;
+  var isUpdating = false.obs;
 
-  // Users
-  var users = <UserModel>[
-    UserModel(
-        id: '0001',
-        name: "Alice",
-        city: "LA",
-        userStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis']),
-    UserModel(
-        id: '0002',
-        name: "Bob",
-        city: "SF",
-        userStatus: "Active",
-        sports: ['Cricket', 'Table Tennis']),
-  ].obs;
+  getBoth() async {
+    Future.wait([
+      getAllOwners(),
+      getAllPlayers(),
+    ]);
+  }
 
   // Notifications
   var notifications = <NotificationModel>[
@@ -78,29 +66,123 @@ class DashboardController extends GetxController {
     ),
   ].obs;
 
-  void updateOwnerStatus(String id, String newStatus) {
-    final index = venueOwners.indexWhere((owner) => owner.id == id);
-    if (index != -1) {
-      venueOwners[index].ownerStatus = newStatus;
-      venueOwners.refresh();
+  Future<void> getAllOwners() async {
+    try {
+      isLoading(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllOwners();
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        var data = response['data']['data'];
+        if (data != null) {
+          venueOwners.value = List<UserModel>.from(
+            data.map((venue) => UserModel.fromJson(venue)),
+          ).take(4).toList();
+        }
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch owners.');
+    } finally {
+      isLoading(false);
     }
   }
 
-  void updateUserStatus(String id, String newStatus) {
-    final index = users.indexWhere((user) => user.id == id);
-    if (index != -1) {
-      users[index].userStatus = newStatus;
-      users.refresh();
+  Future<void> getAllPlayers() async {
+    try {
+      isLoadingUsers(true);
+
+      Map<String, dynamic> response = await AdminServices.viewAllPlayers();
+
+      if (response['success'] == true &&
+          response['message']['status'] == "success") {
+        var data = response['message']['data'];
+        if (data != null) {
+          users.value = List<UserModel>.from(
+            data.map((venue) => UserModel.fromJson(venue)),
+          ).take(4).toList();
+        }
+      } else {
+        _handleError(response['message']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch players.');
+    } finally {
+      isLoadingUsers(false);
     }
   }
 
-  void deleteVenueOwner(String id) {
-    venueOwners.removeWhere((owner) => owner.id == id);
-    venueOwners.refresh();
+  Future<void> deleteUser(String id) async {
+    try {
+      userId.value = id;
+
+      Map<String, dynamic> response = await AdminServices.deleteUser(id);
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        if (venueOwners.any((owner) => owner.id == id)) {
+          venueOwners.removeWhere((owner) => owner.id == id);
+
+          venueOwners.refresh();
+        } else {
+          users.removeWhere((user) => user.id == id);
+
+          users.refresh();
+        }
+        Get.back();
+        showCustomSnackbar('Success', response['data']['message'],
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to delete venue.');
+    } finally {
+      userId.value = '';
+    }
   }
 
-  void deleteUser(String id) {
-    users.removeWhere((user) => user.id == id);
-    users.refresh();
+  Future<void> updateUserStatus(String status, String id) async {
+    try {
+      isUpdating(true);
+
+      Map<String, dynamic> response =
+          await AdminServices.updateUserStatus({"status": status}, id);
+
+      if (response['success'] == true && response['data']['success'] == true) {
+        if (users.any((element) => element.id == id)) {
+          final index = users.indexWhere((user) => user.id == id);
+          if (index != -1) {
+            users[index].status = status;
+            users.refresh();
+          }
+        } else {
+          final index = venueOwners.indexWhere((user) => user.id == id);
+          if (index != -1) {
+            venueOwners[index].status = status;
+            venueOwners.refresh();
+          }
+        }
+
+        showCustomSnackbar('Success', 'Status updated successfully',
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to update user.');
+    } finally {
+      isUpdating(false);
+    }
+  }
+
+  void _handleError(String message) {
+    showCustomSnackbar("Error", message);
   }
 }

@@ -23,6 +23,7 @@ class CustomTextField extends StatelessWidget {
   final Function()? onTap;
   final int maxLines;
   final List<TextInputFormatter>? inputFormatters;
+  final double borderRadius;
   CustomTextField({
     super.key,
     required this.controller,
@@ -43,6 +44,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.maxLines = 1,
     this.inputFormatters,
+    this.borderRadius = 12,
   });
 
   @override
@@ -75,15 +77,15 @@ class CustomTextField extends StatelessWidget {
           prefixIcon: prefix,
           suffix: suffixText,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide(color: borderColor, width: 1),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide(color: borderColor, width: 1),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide(color: borderColor, width: 1),
           ),
         ),

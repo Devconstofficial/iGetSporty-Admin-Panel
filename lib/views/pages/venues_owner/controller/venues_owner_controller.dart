@@ -1,92 +1,108 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iget_sporty_admin_panel/models/venue_owner_model.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
+import 'package:iget_sporty_admin_panel/models/user_model.dart';
+import 'package:iget_sporty_admin_panel/services/admin_services.dart';
 
 class VenuesOwnerController extends GetxController {
-  var filteredOwners = <VenueOwnerModel>[].obs;
+  var filteredOwners = <UserModel>[].obs;
   var searchController = TextEditingController();
   var selectedStatuses = [].obs;
   var isApplied = false.obs;
   var selectedStatus = ''.obs;
   var selectedDates = <DateTime>[].obs;
+  var venueOwners = <UserModel>[].obs;
+  var isLoading = false.obs;
+  var userId = ''.obs;
+  var isUpdating = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    filteredOwners.assignAll(venueOwners);
-  }
+  Future<void> getAllOwners() async {
+    try {
+      isLoading(true);
 
-  var venueOwners = <VenueOwnerModel>[
-    VenueOwnerModel(
-        id: '0001',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 17, 12)),
-    VenueOwnerModel(
-        id: '0002',
-        name: "John Doe",
-        city: "NYC",
-        ownerStatus: "Active",
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 8, 12)),
-    VenueOwnerModel(
-        id: '0003',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Rejected",
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 12, 5)),
-    VenueOwnerModel(
-        id: '0004',
-        name: "Michael Smith",
-        city: "LHR",
-        ownerStatus: "Active",
-        sports: ['Basketball'],
-        createdAt: DateTime(2024, 6, 15)),
-    VenueOwnerModel(
-        id: '0005',
-        name: "Sarah Brown",
-        city: "NYC",
-        ownerStatus: "Pending",
-        sports: ['Cricket', 'Tennis'],
-        createdAt: DateTime(2024, 2, 14)),
-    VenueOwnerModel(
-        id: '0005',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Pending",
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 3, 14)),
-    VenueOwnerModel(
-        id: '0006',
-        name: "Ahmad Ali",
-        city: "LHR",
-        ownerStatus: "Rejected",
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 12, 17)),
-  ].obs;
+      Map<String, dynamic> response = await AdminServices.viewAllOwners();
 
-  void updateOwnerStatus(String id, String newStatus) {
-    final venueOwnerIndex = venueOwners.indexWhere((owner) => owner.id == id);
-    if (venueOwnerIndex != -1) {
-      venueOwners[venueOwnerIndex].ownerStatus = newStatus;
-      venueOwners.refresh();
-    }
-
-    final filteredOwnerIndex =
-        filteredOwners.indexWhere((owner) => owner.id == id);
-    if (filteredOwnerIndex != -1) {
-      filteredOwners[filteredOwnerIndex].ownerStatus = newStatus;
-      filteredOwners.refresh();
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        var data = response['data']['data'];
+        if (data != null) {
+          venueOwners.value = List<UserModel>.from(
+            data.map((venue) => UserModel.fromJson(venue)),
+          );
+          filteredOwners.assignAll(venueOwners);
+        }
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch owners.');
+    } finally {
+      isLoading(false);
     }
   }
 
-  void deleteVenueOwner(String id) {
-    venueOwners.removeWhere((owner) => owner.id == id);
-    filteredOwners.removeWhere((owner) => owner.id == id);
-    venueOwners.refresh();
+  Future<void> deleteUser(String id) async {
+    try {
+      userId.value = id;
+
+      Map<String, dynamic> response = await AdminServices.deleteUser(id);
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        venueOwners.removeWhere((user) => user.id == id);
+        filteredOwners.assignAll(venueOwners);
+        venueOwners.refresh();
+        filteredOwners.refresh();
+        Get.back();
+        showCustomSnackbar('Success', 'Status updated successfully',
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to delete user.');
+    } finally {
+      userId.value = '';
+    }
+  }
+
+  Future<void> updateOwnerStatus(String status, String id) async {
+    try {
+      isApplied.value = true;
+      isUpdating(true);
+
+      Map<String, dynamic> response =
+          await AdminServices.updateUserStatus({"status": status}, id);
+
+      if (response['success'] == true && response['data']['success'] == true) {
+        final index = venueOwners.indexWhere((user) => user.id == id);
+        if (index != -1) {
+          venueOwners[index].status = status;
+          venueOwners.refresh();
+        }
+        final filteredOwnerIndex =
+            filteredOwners.indexWhere((owner) => owner.id == id);
+        if (filteredOwnerIndex != -1) {
+          filteredOwners[filteredOwnerIndex].status = status;
+          filteredOwners.refresh();
+        }
+        Get.back();
+
+        showCustomSnackbar('Success', response['data']['message'],
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to update user.');
+    } finally {
+      isUpdating(false);
+    }
   }
 
   void searchOwners(String query) {
@@ -101,7 +117,7 @@ class VenuesOwnerController extends GetxController {
   void filterOwnersByStatuses() {
     isApplied.value = true;
     filteredOwners.assignAll(venueOwners
-        .where((owner) => selectedStatuses.contains(owner.ownerStatus))
+        .where((user) => selectedStatuses.contains(user.status))
         .toList());
   }
 
@@ -114,19 +130,24 @@ class VenuesOwnerController extends GetxController {
 
   void filterOwnersByDate() {
     isApplied.value = true;
-    if (selectedDates.isNotEmpty) {
-      filteredOwners.assignAll(venueOwners.where((owner) {
-        if (owner.createdAt == null) return false;
+    Get.back();
+    // if (selectedDates.isNotEmpty) {
+    //   filteredOwners.assignAll(venueOwners.where((owner) {
+    //     if (owner.createdAt == null) return false;
 
-        DateTime ownerDate = DateTime(owner.createdAt!.year,
-            owner.createdAt!.month, owner.createdAt!.day);
-        return selectedDates.any((selectedDate) =>
-            selectedDate.year == ownerDate.year &&
-            selectedDate.month == ownerDate.month &&
-            selectedDate.day == ownerDate.day);
-      }).toList());
-    } else {
-      filteredOwners.assignAll(venueOwners);
-    }
+    //     DateTime ownerDate = DateTime(owner.createdAt!.year,
+    //         owner.createdAt!.month, owner.createdAt!.day);
+    //     return selectedDates.any((selectedDate) =>
+    //         selectedDate.year == ownerDate.year &&
+    //         selectedDate.month == ownerDate.month &&
+    //         selectedDate.day == ownerDate.day);
+    //   }).toList());
+    // } else {
+    //   filteredOwners.assignAll(venueOwners);
+    // }
+  }
+
+  void _handleError(String message) {
+    showCustomSnackbar("Error", message);
   }
 }

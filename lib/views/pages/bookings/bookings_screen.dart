@@ -8,8 +8,22 @@ import 'package:iget_sporty_admin_panel/utils/app_strings.dart';
 import 'package:iget_sporty_admin_panel/views/pages/bookings/controller/bookings_controller.dart';
 import '../../../utils/app_styles.dart';
 
-class BookingsScreen extends GetView<BookingsController> {
+class BookingsScreen extends StatefulWidget {
   const BookingsScreen({super.key});
+
+  @override
+  State<BookingsScreen> createState() => _BookingsScreenState();
+}
+
+class _BookingsScreenState extends State<BookingsScreen> {
+  final BookingsController controller = Get.find();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.getAllBookings();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -204,129 +218,92 @@ class BookingsScreen extends GetView<BookingsController> {
             child: SizedBox(
               width: 1141.w,
               child: Obx(
-                () => ClipRRect(
-                  borderRadius: BorderRadius.circular(15.r),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: kGreyShade7Color, width: 0.3),
-                      borderRadius: BorderRadius.circular(15.r),
-                    ),
-                    child: DataTable(
-                      dataRowMinHeight: 38.h,
-                      headingRowHeight: 48.h,
-                      dividerThickness: 0.4,
-                      columnSpacing: 50.w,
-                      border: TableBorder.all(
-                        color: Colors.transparent,
-                        width: 0.3,
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                      headingRowColor:
-                          const WidgetStatePropertyAll(kGreyShade6Color),
-                      headingTextStyle: AppStyles.blackTextStyle().copyWith(
-                          color: kBlackShadeColor,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 14.sp),
-                      dataTextStyle: AppStyles.blackTextStyle().copyWith(
-                        color: kBlackShadeColor,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.sp,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      columns: const [
-                        DataColumn(label: Text("Booking ID")),
-                        DataColumn(label: Text("User")),
-                        DataColumn(label: Text("Location(City)")),
-                        DataColumn(label: Text("Venue")),
-                        DataColumn(label: Text("Status")),
-                        DataColumn(label: Text("Action")),
-                      ],
-                      rows: controller.filteredBookings.map((booking) {
-                        return DataRow(
-                          cells: [
-                            DataCell(onTap: () {
-                              Get.toNamed(kBookingDetailsScreenRoute,
-                                  arguments: booking);
-                            },
-                                Text(
-                                  booking.id,
-                                )),
-                            DataCell(onTap: () {
-                              Get.toNamed(kBookingDetailsScreenRoute,
-                                  arguments: booking);
-                            },
-                                Text(
-                                  booking.ownerName,
-                                )),
-                            DataCell(onTap: () {
-                              Get.toNamed(kBookingDetailsScreenRoute,
-                                  arguments: booking);
-                            },
-                                Text(
-                                  booking.venueLocation,
-                                  maxLines: 1,
-                                )),
-                            DataCell(onTap: () {
-                              Get.toNamed(kBookingDetailsScreenRoute,
-                                  arguments: booking);
-                            },
-                                Text(
-                                  booking.venueName,
-                                  maxLines: 1,
-                                )),
-                            DataCell(
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w, vertical: 6.h),
-                                decoration: BoxDecoration(
-                                  color: booking.bookingStatus == "Confirmed"
-                                      ? kGreenColor.withOpacity(0.3)
-                                      : kPurpleColor.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(4.5),
+                () => controller.isLoading.value
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: kSecondaryColor,
+                        ),
+                      )
+                    : controller.bookings.isEmpty
+                        ? const Center(child: Text('No bookings'))
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(15.r),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: kGreyShade7Color, width: 0.3),
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              child: DataTable(
+                                dataRowMinHeight: 38.h,
+                                headingRowHeight: 48.h,
+                                dividerThickness: 0.4,
+                                columnSpacing: 50.w,
+                                border: TableBorder.all(
+                                  color: Colors.transparent,
+                                  width: 0.3,
+                                  borderRadius: BorderRadius.circular(15.r),
                                 ),
-                                child: Text(
-                                  booking.bookingStatus,
-                                  style: TextStyle(
-                                    color: booking.bookingStatus == "Confirmed"
-                                        ? kGreenColor 
-                                        : kPurpleColor,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 12.sp,
-                                  ),
+                                headingRowColor: const WidgetStatePropertyAll(
+                                    kGreyShade6Color),
+                                headingTextStyle: AppStyles.blackTextStyle()
+                                    .copyWith(
+                                        color: kBlackShadeColor,
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 14.sp),
+                                dataTextStyle:
+                                    AppStyles.blackTextStyle().copyWith(
+                                  color: kBlackShadeColor,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.sp,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                columns: const [
+                                  DataColumn(label: Text("Booking ID")),
+                                  DataColumn(label: Text("User")),
+                                  DataColumn(label: Text("Location(City)")),
+                                  DataColumn(label: Text("Venue")),
+                                ],
+                                rows:
+                                    controller.filteredBookings.map((booking) {
+                                  return DataRow(
+                                    cells: [
+                                      DataCell(onTap: () {
+                                        Get.toNamed(kBookingDetailsScreenRoute,
+                                            arguments: booking);
+                                      },
+                                          Text(
+                                            booking.id,
+                                          )),
+                                      DataCell(onTap: () {
+                                        Get.toNamed(kBookingDetailsScreenRoute,
+                                            arguments: booking);
+                                      },
+                                          Text(
+                                            booking.ownerName,
+                                          )),
+                                      DataCell(onTap: () {
+                                        Get.toNamed(kBookingDetailsScreenRoute,
+                                            arguments: booking);
+                                      },
+                                          Text(
+                                            booking.venueLocation,
+                                            maxLines: 1,
+                                          )),
+                                      DataCell(onTap: () {
+                                        Get.toNamed(kBookingDetailsScreenRoute,
+                                            arguments: booking);
+                                      },
+                                          Text(
+                                            booking.venueName,
+                                            maxLines: 1,
+                                          )),
+                                    ],
+                                  );
+                                }).toList(),
                               ),
                             ),
-                            DataCell(
-                              Container(
-                                height: 33.h,
-                                width: 69.w,
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: kGreyShad1Color, width: 0.6),
-                                  color: kWhiteShadeColor,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      controller.deleteBooking(booking.id);
-                                    },
-                                    child: Image.asset(
-                                      kBinIcon,
-                                      height: 16.h,
-                                      width: 16.w,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
+                          ),
               ),
             ),
           ),

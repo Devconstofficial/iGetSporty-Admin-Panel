@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iget_sporty_admin_panel/custom_widgets/custom_snackbar.dart';
 import 'package:iget_sporty_admin_panel/models/user_model.dart';
-import 'package:iget_sporty_admin_panel/utils/app_images.dart';
+import 'package:iget_sporty_admin_panel/services/admin_services.dart';
 
 class UsersController extends GetxController {
   var filteredUsers = <UserModel>[].obs;
@@ -10,93 +13,96 @@ class UsersController extends GetxController {
   var isApplied = false.obs;
   var selectedDates = <DateTime>[].obs;
   var selectedStatus = ''.obs;
+  var isLoadingUsers = false.obs;
+  var users = <UserModel>[].obs;
+  var userId = ''.obs;
+  var isUpdating = false.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    filteredUsers.assignAll(users);
-  }
+  Future<void> getAllPlayers() async {
+    try {
+      isLoadingUsers(true);
 
-  var users = <UserModel>[
-    UserModel(
-        id: '0001',
-        name: "Alice",
-        city: "LA",
-        userStatus: "Pending",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 17, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-    UserModel(
-        id: '0002',
-        name: "Bob",
-        city: "SF",
-        userStatus: "Active",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 8, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-    UserModel(
-        id: '0003',
-        name: "Alice",
-        city: "LA",
-        userStatus: "Pending",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 17, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-    UserModel(
-        id: '0004',
-        name: "Bob",
-        city: "SF",
-        userStatus: "Active",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 8, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-    UserModel(
-        id: '0005',
-        name: "Alice",
-        city: "LA",
-        userStatus: "Pending",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 17, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-    UserModel(
-        id: '0006',
-        name: "Bob",
-        city: "SF",
-        userStatus: "Active",
-        gender: 'Male',
-        sports: ['Cricket', 'Table Tennis'],
-        createdAt: DateTime(2024, 8, 12),
-        cnicImages: [kImg],
-        dateOfBirth: DateTime(2024, 17, 12)),
-  ].obs;
+      Map<String, dynamic> response = await AdminServices.viewAllPlayers();
 
-  void updateUserStatus(String id, String newStatus) {
-    final index = users.indexWhere((user) => user.id == id);
-    if (index != -1) {
-      users[index].userStatus = newStatus;
-      users.refresh();
-    }
-    final filteredUserIndex = filteredUsers.indexWhere((user) => user.id == id);
-    if (filteredUserIndex != -1) {
-      filteredUsers[filteredUserIndex].userStatus = newStatus;
-      filteredUsers.refresh();
+      if (response['success'] == true &&
+          response['message']['status'] == "success") {
+        var data = response['message']['data'];
+        if (data != null) {
+          users.value = List<UserModel>.from(
+            data.map((user) => UserModel.fromJson(user)),
+          );
+          filteredUsers.assignAll(users);
+        }
+      } else {
+        _handleError(response['message']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to fetch players.');
+    } finally {
+      isLoadingUsers(false);
     }
   }
 
-  void deleteUser(String id) {
-    users.removeWhere((user) => user.id == id);
-    filteredUsers.removeWhere((user) => user.id == id);
-    users.refresh();
+  Future<void> deleteUser(String id) async {
+    try {
+      userId.value = id;
+
+      Map<String, dynamic> response = await AdminServices.deleteUser(id);
+
+      if (response['success'] == true &&
+          response['data']['status'] == "success") {
+        users.removeWhere((user) => user.id == id);
+        filteredUsers.assignAll(users);
+        users.refresh();
+        filteredUsers.refresh();
+        Get.back();
+        showCustomSnackbar('Success', response['data']['message'],
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to delete venue.');
+    } finally {
+      userId.value = '';
+    }
+  }
+
+  Future<void> updateUserStatus(String status, String id) async {
+    try {
+      isApplied.value = true;
+      isUpdating(true);
+
+      Map<String, dynamic> response =
+          await AdminServices.updateUserStatus({"status": status}, id);
+
+      log('ress $response');
+
+      if (response['success'] == true && response['data']['success'] == true) {
+        final index = users.indexWhere((user) => user.id == id);
+        if (index != -1) {
+          users[index].status = status;
+        }
+        final filteredUserIndex =
+            filteredUsers.indexWhere((user) => user.id == id);
+        if (filteredUserIndex != -1) {
+          filteredUsers[filteredUserIndex].status = status;
+          filteredUsers.refresh();
+        }
+        Get.back();
+        showCustomSnackbar('Success', 'Status updated successfully',
+            backgroundColor: Colors.green);
+      } else {
+        _handleError(response['data']['message'] ?? 'Something went wrong');
+      }
+    } catch (e, stackTrace) {
+      log('Error: $e\n$stackTrace');
+      _handleError('Failed to update user.');
+    } finally {
+      isUpdating(false);
+    }
   }
 
   void searchUsers(String query) {
@@ -110,9 +116,8 @@ class UsersController extends GetxController {
 
   void filterUsersByStatuses() {
     isApplied.value = true;
-    filteredUsers.assignAll(users
-        .where((user) => selectedStatuses.contains(user.userStatus))
-        .toList());
+    filteredUsers.assignAll(
+        users.where((user) => selectedStatuses.contains(user.status)).toList());
   }
 
   void resetFilter() {
@@ -124,24 +129,29 @@ class UsersController extends GetxController {
 
   void filterUsersByDate() {
     isApplied.value = true;
+    Get.back();
 
-    if (selectedDates.isNotEmpty) {
-      filteredUsers.assignAll(users.where((user) {
-        if (user.createdAt == null) return false;
+    //if (selectedDates.isNotEmpty) {
+    // filteredUsers.assignAll(users.where((user) {
+    //   if (user.createdAt == null) return false;
 
-        DateTime userDate = DateTime(
-          user.createdAt!.year,
-          user.createdAt!.month,
-          user.createdAt!.day,
-        );
+    //   DateTime userDate = DateTime(
+    //     user.createdAt!.year,
+    //     user.createdAt!.month,
+    //     user.createdAt!.day,
+    //   );
 
-        return selectedDates.any((selectedDate) =>
-            selectedDate.year == userDate.year &&
-            selectedDate.month == userDate.month &&
-            selectedDate.day == userDate.day);
-      }).toList());
-    } else {
-      filteredUsers.assignAll(users);
-    }
+    //     return selectedDates.any((selectedDate) =>
+    //         selectedDate.year == userDate.year &&
+    //         selectedDate.month == userDate.month &&
+    //         selectedDate.day == userDate.day);
+    //   }).toList());
+    // } else {
+    //   filteredUsers.assignAll(users);
+    // }
+  }
+
+  void _handleError(String message) {
+    showCustomSnackbar("Error", message);
   }
 }
